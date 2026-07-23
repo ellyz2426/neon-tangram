@@ -1,0 +1,439 @@
+{
+  "element": {
+    "sourceTag": "panel",
+    "type": "custom",
+    "children": [
+      {
+        "sourceTag": "container",
+        "type": "custom",
+        "children": [
+          {
+            "sourceTag": "container",
+            "type": "custom",
+            "children": [
+              {
+                "sourceTag": "text",
+                "type": "custom",
+                "children": [
+                  "Easy Lv1"
+                ],
+                "properties": {
+                  "class": "label",
+                  "name": "level"
+                },
+                "dataUid": "uid-4"
+              },
+              {
+                "sourceTag": "text",
+                "type": "custom",
+                "children": [
+                  "0/7"
+                ],
+                "properties": {
+                  "class": "snapped",
+                  "name": "snapped"
+                },
+                "dataUid": "uid-5"
+              },
+              {
+                "sourceTag": "text",
+                "type": "custom",
+                "children": [
+                  "Moves: 0"
+                ],
+                "properties": {
+                  "class": "label",
+                  "name": "moves"
+                },
+                "dataUid": "uid-6"
+              },
+              {
+                "sourceTag": "text",
+                "type": "custom",
+                "children": [
+                  "0:00"
+                ],
+                "properties": {
+                  "class": "label",
+                  "name": "timer"
+                },
+                "dataUid": "uid-7"
+              }
+            ],
+            "properties": {
+              "class": "top"
+            },
+            "dataUid": "uid-3"
+          },
+          {
+            "sourceTag": "container",
+            "type": "custom",
+            "children": [
+              {
+                "sourceTag": "text",
+                "type": "custom",
+                "children": [
+                  "Click a piece"
+                ],
+                "properties": {
+                  "class": "piece-info",
+                  "name": "piece-info"
+                },
+                "dataUid": "uid-9"
+              },
+              {
+                "sourceTag": "text",
+                "type": "custom",
+                "children": [
+                  "Undo"
+                ],
+                "properties": {
+                  "class": "btn",
+                  "name": "btn-undo"
+                },
+                "dataUid": "uid-10"
+              },
+              {
+                "sourceTag": "text",
+                "type": "custom",
+                "children": [
+                  "Hint"
+                ],
+                "properties": {
+                  "class": "hint-btn",
+                  "name": "btn-hint"
+                },
+                "dataUid": "uid-11"
+              },
+              {
+                "sourceTag": "text",
+                "type": "custom",
+                "children": [
+                  "Reset"
+                ],
+                "properties": {
+                  "class": "btn",
+                  "name": "btn-restart"
+                },
+                "dataUid": "uid-12"
+              },
+              {
+                "sourceTag": "text",
+                "type": "custom",
+                "children": [
+                  "II"
+                ],
+                "properties": {
+                  "class": "btn",
+                  "name": "btn-pause"
+                },
+                "dataUid": "uid-13"
+              }
+            ],
+            "properties": {
+              "class": "bottom"
+            },
+            "dataUid": "uid-8"
+          }
+        ],
+        "properties": {
+          "class": "root"
+        },
+        "dataUid": "uid-2"
+      }
+    ],
+    "properties": {},
+    "dataUid": "uid-1"
+  },
+  "classes": {
+    "root": {
+      "content": {
+        "flexDirection": "column",
+        "alignItems": "center",
+        "gap": "4",
+        "padding": "6",
+        "backgroundColor": "#0a0a2acc",
+        "borderRadius": 8,
+        "borderColor": "#00ffff33",
+        "borderWidth": "1"
+      }
+    },
+    "top": {
+      "content": {
+        "flexDirection": "row",
+        "alignItems": "center",
+        "justifyContent": "space-between",
+        "gap": "8",
+        "width": "100%"
+      }
+    },
+    "bottom": {
+      "content": {
+        "flexDirection": "row",
+        "alignItems": "center",
+        "justifyContent": "center",
+        "gap": "6"
+      }
+    },
+    "label": {
+      "content": {
+        "fontSize": "11",
+        "color": "#00ffff"
+      }
+    },
+    "snapped": {
+      "content": {
+        "fontSize": "10",
+        "color": "#44ff88"
+      }
+    },
+    "piece-info": {
+      "content": {
+        "fontSize": "9",
+        "color": "#88aacc"
+      }
+    },
+    "btn": {
+      "content": {
+        "fontSize": "10",
+        "color": "#ffffff",
+        "backgroundColor": "#1a1a3a",
+        "padding": "4",
+        "borderRadius": 4,
+        "borderColor": "#00ffff33",
+        "borderWidth": "1",
+        "cursor": "pointer",
+        "hover": {
+          "backgroundColor": "#00aacc"
+        }
+      }
+    },
+    "hint-btn": {
+      "content": {
+        "fontSize": "10",
+        "color": "#ffcc00",
+        "backgroundColor": "#2a2a1a",
+        "padding": "4",
+        "borderRadius": 4,
+        "borderColor": "#ffcc0044",
+        "borderWidth": "1",
+        "cursor": "pointer",
+        "hover": {
+          "backgroundColor": "#aa8800"
+        }
+      }
+    }
+  },
+  "ranges": {
+    "uid-1": {
+      "start": {
+        "line": 0,
+        "column": 0
+      },
+      "end": {
+        "line": 28,
+        "column": 8
+      }
+    },
+    "root": {
+      "start": {
+        "line": 2,
+        "column": 4
+      },
+      "end": {
+        "line": 2,
+        "column": 9
+      }
+    },
+    "top": {
+      "start": {
+        "line": 3,
+        "column": 4
+      },
+      "end": {
+        "line": 3,
+        "column": 8
+      }
+    },
+    "bottom": {
+      "start": {
+        "line": 4,
+        "column": 4
+      },
+      "end": {
+        "line": 4,
+        "column": 11
+      }
+    },
+    "label": {
+      "start": {
+        "line": 5,
+        "column": 4
+      },
+      "end": {
+        "line": 5,
+        "column": 10
+      }
+    },
+    "snapped": {
+      "start": {
+        "line": 6,
+        "column": 4
+      },
+      "end": {
+        "line": 6,
+        "column": 12
+      }
+    },
+    "piece-info": {
+      "start": {
+        "line": 7,
+        "column": 4
+      },
+      "end": {
+        "line": 7,
+        "column": 15
+      }
+    },
+    "btn": {
+      "start": {
+        "line": 8,
+        "column": 4
+      },
+      "end": {
+        "line": 8,
+        "column": 8
+      }
+    },
+    "hint-btn": {
+      "start": {
+        "line": 10,
+        "column": 4
+      },
+      "end": {
+        "line": 10,
+        "column": 13
+      }
+    },
+    "uid-2": {
+      "start": {
+        "line": 13,
+        "column": 2
+      },
+      "end": {
+        "line": 27,
+        "column": 14
+      }
+    },
+    "uid-3": {
+      "start": {
+        "line": 14,
+        "column": 4
+      },
+      "end": {
+        "line": 19,
+        "column": 16
+      }
+    },
+    "uid-4": {
+      "start": {
+        "line": 15,
+        "column": 6
+      },
+      "end": {
+        "line": 15,
+        "column": 54
+      }
+    },
+    "uid-5": {
+      "start": {
+        "line": 16,
+        "column": 6
+      },
+      "end": {
+        "line": 16,
+        "column": 53
+      }
+    },
+    "uid-6": {
+      "start": {
+        "line": 17,
+        "column": 6
+      },
+      "end": {
+        "line": 17,
+        "column": 54
+      }
+    },
+    "uid-7": {
+      "start": {
+        "line": 18,
+        "column": 6
+      },
+      "end": {
+        "line": 18,
+        "column": 50
+      }
+    },
+    "uid-8": {
+      "start": {
+        "line": 20,
+        "column": 4
+      },
+      "end": {
+        "line": 26,
+        "column": 16
+      }
+    },
+    "uid-9": {
+      "start": {
+        "line": 21,
+        "column": 6
+      },
+      "end": {
+        "line": 21,
+        "column": 69
+      }
+    },
+    "uid-10": {
+      "start": {
+        "line": 22,
+        "column": 6
+      },
+      "end": {
+        "line": 22,
+        "column": 51
+      }
+    },
+    "uid-11": {
+      "start": {
+        "line": 23,
+        "column": 6
+      },
+      "end": {
+        "line": 23,
+        "column": 56
+      }
+    },
+    "uid-12": {
+      "start": {
+        "line": 24,
+        "column": 6
+      },
+      "end": {
+        "line": 24,
+        "column": 55
+      }
+    },
+    "uid-13": {
+      "start": {
+        "line": 25,
+        "column": 6
+      },
+      "end": {
+        "line": 25,
+        "column": 50
+      }
+    }
+  }
+}
