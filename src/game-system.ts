@@ -127,6 +127,36 @@ const PUZZLES: Record<Difficulty, PuzzleDef[]> = {
       { x: 0.18, y: -0.08, rot: -Math.PI*0.5 }, { x: 0, y: 0.05, rot: 0 },
       { x: 0, y: -0.05, rot: 0 },
     ]},
+    { name: 'Parallelogram', pieces: [
+      { x: -0.12, y: 0.1, rot: Math.PI*0.25 }, { x: 0.12, y: -0.1, rot: -Math.PI*0.75 },
+      { x: 0, y: 0, rot: Math.PI*0.5 }, { x: -0.15, y: -0.12, rot: Math.PI*0.25 },
+      { x: 0.15, y: 0.12, rot: -Math.PI*0.25 }, { x: 0.08, y: 0.05, rot: Math.PI*0.25 },
+      { x: -0.05, y: -0.05, rot: Math.PI*0.25 },
+    ]},
+    { name: 'House', pieces: [
+      { x: 0, y: 0.18, rot: Math.PI }, { x: 0, y: -0.05, rot: 0 },
+      { x: 0.08, y: 0.1, rot: -Math.PI*0.25 }, { x: -0.1, y: -0.15, rot: Math.PI*0.5 },
+      { x: 0.1, y: -0.15, rot: -Math.PI*0.5 }, { x: 0, y: -0.15, rot: 0 },
+      { x: -0.08, y: 0.1, rot: Math.PI*0.75 },
+    ]},
+    { name: 'Fish', pieces: [
+      { x: -0.08, y: 0, rot: Math.PI*0.5 }, { x: 0.12, y: 0, rot: -Math.PI*0.5 },
+      { x: -0.18, y: 0.08, rot: Math.PI*0.25 }, { x: -0.18, y: -0.08, rot: Math.PI*0.75 },
+      { x: 0.18, y: 0, rot: 0 }, { x: 0.05, y: 0, rot: Math.PI*0.25 },
+      { x: -0.05, y: 0, rot: 0, flip: true },
+    ]},
+    { name: 'Chevron', pieces: [
+      { x: 0, y: 0.12, rot: Math.PI*0.25 }, { x: 0, y: -0.12, rot: -Math.PI*0.75 },
+      { x: -0.08, y: 0, rot: Math.PI*0.5 }, { x: 0.12, y: 0.05, rot: -Math.PI*0.25 },
+      { x: -0.12, y: -0.05, rot: Math.PI*0.75 }, { x: 0.05, y: -0.08, rot: Math.PI*0.25 },
+      { x: -0.05, y: 0.08, rot: Math.PI*0.25 },
+    ]},
+    { name: 'Cross', pieces: [
+      { x: 0, y: 0.15, rot: Math.PI*0.25 }, { x: 0, y: -0.15, rot: -Math.PI*0.75 },
+      { x: 0, y: 0, rot: Math.PI }, { x: -0.12, y: 0, rot: Math.PI*0.5 },
+      { x: 0.12, y: 0, rot: -Math.PI*0.5 }, { x: 0, y: 0.05, rot: 0 },
+      { x: 0, y: -0.05, rot: 0 },
+    ]},
   ],
   medium: [
     { name: 'Cat', pieces: [
@@ -159,6 +189,36 @@ const PUZZLES: Record<Difficulty, PuzzleDef[]> = {
       { x: 0.18, y: 0.05, rot: -Math.PI*0.5 }, { x: 0, y: -0.15, rot: 0 },
       { x: 0, y: 0, rot: 0, flip: true },
     ]},
+    { name: 'Rabbit', pieces: [
+      { x: 0, y: -0.1, rot: 0 }, { x: -0.1, y: 0.08, rot: Math.PI*0.75 },
+      { x: 0.08, y: 0.15, rot: -Math.PI*0.25 }, { x: -0.05, y: 0.22, rot: Math.PI*0.5 },
+      { x: 0.1, y: 0.22, rot: -Math.PI*0.75 }, { x: 0.05, y: 0, rot: Math.PI*0.25 },
+      { x: -0.08, y: -0.05, rot: Math.PI*0.5, flip: true },
+    ]},
+    { name: 'Mountain', pieces: [
+      { x: -0.12, y: -0.1, rot: 0 }, { x: 0.12, y: -0.1, rot: Math.PI },
+      { x: 0, y: 0.05, rot: Math.PI*0.5 }, { x: -0.2, y: -0.05, rot: Math.PI*0.25 },
+      { x: 0.2, y: -0.05, rot: -Math.PI*0.25 }, { x: 0, y: -0.1, rot: 0 },
+      { x: 0, y: 0.1, rot: Math.PI*0.25 },
+    ]},
+    { name: 'Fox', pieces: [
+      { x: 0.05, y: -0.05, rot: -Math.PI*0.25 }, { x: -0.12, y: 0.08, rot: Math.PI*0.5 },
+      { x: 0.12, y: 0.12, rot: -Math.PI*0.5 }, { x: -0.08, y: 0.2, rot: Math.PI*0.75 },
+      { x: 0.15, y: 0.2, rot: -Math.PI*0.25 }, { x: -0.05, y: -0.1, rot: Math.PI*0.25 },
+      { x: 0, y: 0.05, rot: Math.PI*0.5, flip: true },
+    ]},
+    { name: 'Penguin', pieces: [
+      { x: 0, y: -0.12, rot: Math.PI*0.25 }, { x: 0, y: 0.12, rot: -Math.PI*0.75 },
+      { x: 0.08, y: 0, rot: -Math.PI*0.5 }, { x: -0.08, y: 0.15, rot: Math.PI*0.75 },
+      { x: 0.08, y: 0.15, rot: -Math.PI*0.25 }, { x: -0.05, y: -0.05, rot: Math.PI*0.25 },
+      { x: 0, y: -0.18, rot: 0 },
+    ]},
+    { name: 'Tower', pieces: [
+      { x: 0, y: -0.15, rot: 0 }, { x: 0, y: 0.15, rot: Math.PI },
+      { x: 0, y: 0, rot: Math.PI*0.5 }, { x: -0.08, y: -0.08, rot: Math.PI*0.5 },
+      { x: 0.08, y: -0.08, rot: -Math.PI*0.5 }, { x: 0, y: 0.08, rot: 0 },
+      { x: 0, y: -0.2, rot: 0 },
+    ]},
   ],
   hard: [
     { name: 'Heart', pieces: [
@@ -190,6 +250,36 @@ const PUZZLES: Record<Difficulty, PuzzleDef[]> = {
       { x: 0.1, y: 0.08, rot: -Math.PI*0.25 }, { x: -0.08, y: -0.08, rot: Math.PI*0.25 },
       { x: 0.08, y: -0.08, rot: -Math.PI*0.75 }, { x: -0.05, y: 0.1, rot: Math.PI*0.25 },
       { x: 0, y: 0, rot: Math.PI*0.75, flip: true },
+    ]},
+    { name: 'Butterfly', pieces: [
+      { x: -0.1, y: 0.05, rot: Math.PI*0.75 }, { x: 0.1, y: 0.05, rot: -Math.PI*0.75 },
+      { x: 0, y: -0.1, rot: 0 }, { x: -0.15, y: -0.05, rot: Math.PI*0.5 },
+      { x: 0.15, y: -0.05, rot: -Math.PI*0.5 }, { x: 0, y: 0.08, rot: Math.PI*0.25 },
+      { x: 0, y: -0.02, rot: Math.PI*0.5, flip: true },
+    ]},
+    { name: 'Rocket', pieces: [
+      { x: 0, y: 0.2, rot: Math.PI*0.25 }, { x: 0, y: -0.08, rot: -Math.PI*0.75 },
+      { x: 0, y: 0.08, rot: 0 }, { x: -0.1, y: -0.15, rot: Math.PI*0.5 },
+      { x: 0.1, y: -0.15, rot: -Math.PI*0.5 }, { x: 0, y: 0, rot: Math.PI*0.25 },
+      { x: 0, y: -0.2, rot: 0, flip: true },
+    ]},
+    { name: 'Eagle', pieces: [
+      { x: -0.12, y: 0.05, rot: Math.PI*0.5 }, { x: 0.12, y: 0.05, rot: -Math.PI*0.5 },
+      { x: 0, y: 0.18, rot: Math.PI }, { x: -0.2, y: -0.05, rot: Math.PI*0.25 },
+      { x: 0.2, y: -0.05, rot: -Math.PI*0.25 }, { x: 0, y: -0.05, rot: 0 },
+      { x: 0, y: -0.15, rot: Math.PI*0.5 },
+    ]},
+    { name: 'Spiral', pieces: [
+      { x: -0.05, y: 0.1, rot: Math.PI*0.75 }, { x: 0.1, y: -0.05, rot: -Math.PI*0.25 },
+      { x: -0.1, y: -0.05, rot: Math.PI*0.25 }, { x: 0.05, y: 0.12, rot: -Math.PI*0.5 },
+      { x: -0.05, y: -0.15, rot: Math.PI*0.75 }, { x: 0.08, y: 0.05, rot: -Math.PI*0.25 },
+      { x: -0.08, y: 0.02, rot: Math.PI*0.5, flip: true },
+    ]},
+    { name: 'Crown', pieces: [
+      { x: -0.12, y: 0.1, rot: Math.PI*0.5 }, { x: 0.12, y: 0.1, rot: -Math.PI*0.5 },
+      { x: 0, y: 0.15, rot: Math.PI }, { x: -0.18, y: -0.02, rot: Math.PI*0.25 },
+      { x: 0.18, y: -0.02, rot: -Math.PI*0.25 }, { x: 0, y: -0.02, rot: 0 },
+      { x: 0, y: -0.1, rot: Math.PI*0.25, flip: true },
     ]},
   ],
 };
@@ -730,6 +820,18 @@ export class GameSystem extends createSystem({
         p.hitEntity.object3D.position.z = TABLE_Z + p.targetY;
       }
       this.playSound('snap');
+      // Auto-select next unsnapped piece
+      if (!this.isSolved()) {
+        let next = (idx + 1) % this.pieces.length;
+        let tries = 0;
+        while (tries < 7 && this.pieces[next].snapped) {
+          next = (next + 1) % this.pieces.length;
+          tries++;
+        }
+        if (!this.pieces[next].snapped) {
+          this.selectedPiece = next;
+        }
+      }
       if (this.isSolved()) this.onWin();
     }
   }
@@ -787,6 +889,16 @@ export class GameSystem extends createSystem({
       this.save.achievements[id] = true;
       saveSave(this.save);
     }
+  }
+
+  getPuzzleName(): string {
+    const puzzles = PUZZLES[this.difficulty];
+    const puzzle = puzzles[(this.level - 1) % puzzles.length];
+    return puzzle?.name || `Level ${this.level}`;
+  }
+
+  getPuzzleCount(diff: Difficulty): number {
+    return PUZZLES[diff].length;
   }
 
   getStars(): number {

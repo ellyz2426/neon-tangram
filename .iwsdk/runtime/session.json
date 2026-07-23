@@ -12,12 +12,12 @@
   "browser": {
     "status": "connected",
     "connected": true,
-    "commandReady": true,
+    "commandReady": false,
     "connectedClientCount": 1,
-    "lastTransitionAt": "2026-07-23T01:14:09.083Z",
-    "lastBridgeConnectedAt": "2026-07-23T01:13:57.683Z",
+    "lastTransitionAt": "2026-07-23T01:20:36.299Z",
+    "lastBridgeConnectedAt": "2026-07-23T01:20:36.299Z",
     "lastCommandReadyAt": "2026-07-23T01:14:09.083Z"
   },
   "registeredAt": "2026-07-23T01:13:55.681Z",
-  "updatedAt": "2026-07-23T01:14:09.088Z"
+  "updatedAt": "2026-07-23T01:20:36.304Z"
 }

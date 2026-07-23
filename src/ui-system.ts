@@ -114,9 +114,14 @@ export class UISystem extends createSystem({
     this.resultsDoc = this.getDoc(e);
     if (!this.resultsDoc) return;
     (this.resultsDoc.getElementById('btn-next') as UIKit.Text)?.addEventListener('click', () => {
-      let nl = this.game.level < 5 ? this.game.level + 1 : 1;
+      const maxLevel = this.game.getPuzzleCount(this.game.difficulty);
+      let nl = this.game.level < maxLevel ? this.game.level + 1 : 1;
       let nd = this.game.difficulty;
-      if (this.game.level >= 5) { const ds = ['easy', 'medium', 'hard'] as const; const i = ds.indexOf(this.game.difficulty); if (i < 2) nd = ds[i + 1]; }
+      if (this.game.level >= maxLevel) {
+        const ds = ['easy', 'medium', 'hard'] as const;
+        const i = ds.indexOf(this.game.difficulty);
+        if (i < 2) nd = ds[i + 1];
+      }
       this.game.startGame(this.game.mode, nd, nl);
     });
     (this.resultsDoc.getElementById('btn-replay') as UIKit.Text)?.addEventListener('click', () => this.game.startGame(this.game.mode, this.game.difficulty, this.game.level));
@@ -131,7 +136,7 @@ export class UISystem extends createSystem({
     (d.getElementById('btn-medium') as UIKit.Text)?.addEventListener('click', () => { this.game.difficulty = 'medium'; this.updateLevelSelect(); });
     (d.getElementById('btn-hard') as UIKit.Text)?.addEventListener('click', () => { this.game.difficulty = 'hard'; this.updateLevelSelect(); });
     (d.getElementById('btn-back') as UIKit.Text)?.addEventListener('click', () => { this.game.state = 'menu'; this.onStateChange(); });
-    for (let i = 1; i <= 5; i++) {
+    for (let i = 1; i <= 10; i++) {
       const lvl = i;
       (d.getElementById(`btn-level-${i}`) as UIKit.Text)?.addEventListener('click', () => this.game.startGame(this.game.mode, this.game.difficulty, lvl));
     }
@@ -179,16 +184,34 @@ export class UISystem extends createSystem({
     if (!this.levelSelectDoc) return;
     const names: Record<string, string> = { classic: 'Classic', speed: 'Speed', zen: 'Zen', challenge: 'Challenge' };
     this.setText(this.levelSelectDoc, 'title', `${names[this.game.mode] || 'Classic'} Mode`);
+    const puzzleCount = this.game.getPuzzleCount(this.game.difficulty);
+    this.setText(this.levelSelectDoc, 'level-count', `${puzzleCount} puzzles`);
     for (const d of ['easy', 'medium', 'hard']) {
       (this.levelSelectDoc.getElementById(`btn-${d}`) as UIKit.Text)?.setProperties({ backgroundColor: d === this.game.difficulty ? '#00aacc' : '#1a1a3a' });
     }
-    for (let i = 1; i <= 5; i++) {
+    for (let i = 1; i <= 10; i++) {
       const k = `${this.game.mode}-${this.game.difficulty}-${i}`;
       const b = this.game.save.bestMoves[k];
+      // Get puzzle name by temporarily setting level
+      const origLevel = this.game.level;
+      this.game.level = i;
+      const pName = this.game.getPuzzleName();
+      this.game.level = origLevel;
       const star = b ? (b <= 10 ? '***' : b <= 25 ? '**' : '*') : '';
-      (this.levelSelectDoc.getElementById(`btn-level-${i}`) as UIKit.Text)?.setProperties({
-        text: b ? `Level ${i} ${star} ${b}mv` : `Level ${i}`,
-      });
+      const el = this.levelSelectDoc.getElementById(`btn-level-${i}`) as UIKit.Text;
+      if (el) {
+        if (i <= puzzleCount) {
+          el.setProperties({
+            text: b ? `${pName} ${star}` : pName,
+            backgroundColor: b ? '#1a2a1a' : '#1a1a3a',
+          });
+        } else {
+          el.setProperties({
+            text: '---',
+            backgroundColor: '#0a0a1a',
+          });
+        }
+      }
     }
   }
 
@@ -248,7 +271,7 @@ export class UISystem extends createSystem({
       if (k.includes('-medium-')) medDone++;
       if (k.includes('-hard-')) hardDone++;
     }
-    this.setText(this.statsDoc, 'stat-progress', `Progress: Easy ${easyDone}/20 | Med ${medDone}/20 | Hard ${hardDone}/20`);
+    this.setText(this.statsDoc, 'stat-progress', `Progress: Easy ${easyDone}/40 | Med ${medDone}/40 | Hard ${hardDone}/40`);
   }
 
   update() {
@@ -280,7 +303,8 @@ export class UISystem extends createSystem({
         } else this.setText(this.hudDoc, 'timer', 'Zen');
       }
       const dn: Record<string, string> = { easy: 'Easy', medium: 'Medium', hard: 'Hard' };
-      this.setText(this.hudDoc, 'level', `${dn[this.game.difficulty]} Lv${this.game.level}`);
+      const puzzleName = this.game.getPuzzleName();
+      this.setText(this.hudDoc, 'level', `${dn[this.game.difficulty]} - ${puzzleName}`);
     }
   }
 }
