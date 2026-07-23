@@ -27,13 +27,25 @@
                 "sourceTag": "text",
                 "type": "custom",
                 "children": [
+                  "0/7"
+                ],
+                "properties": {
+                  "class": "snapped",
+                  "name": "snapped"
+                },
+                "dataUid": "uid-5"
+              },
+              {
+                "sourceTag": "text",
+                "type": "custom",
+                "children": [
                   "Moves: 0"
                 ],
                 "properties": {
                   "class": "label",
                   "name": "moves"
                 },
-                "dataUid": "uid-5"
+                "dataUid": "uid-6"
               },
               {
                 "sourceTag": "text",
@@ -45,7 +57,7 @@
                   "class": "label",
                   "name": "timer"
                 },
-                "dataUid": "uid-6"
+                "dataUid": "uid-7"
               }
             ],
             "properties": {
@@ -67,7 +79,7 @@
                   "class": "piece-info",
                   "name": "piece-info"
                 },
-                "dataUid": "uid-8"
+                "dataUid": "uid-9"
               },
               {
                 "sourceTag": "text",
@@ -79,7 +91,7 @@
                   "class": "btn",
                   "name": "btn-undo"
                 },
-                "dataUid": "uid-9"
+                "dataUid": "uid-10"
               },
               {
                 "sourceTag": "text",
@@ -91,7 +103,7 @@
                   "class": "hint-btn",
                   "name": "btn-hint"
                 },
-                "dataUid": "uid-10"
+                "dataUid": "uid-11"
               },
               {
                 "sourceTag": "text",
@@ -103,7 +115,7 @@
                   "class": "btn",
                   "name": "btn-restart"
                 },
-                "dataUid": "uid-11"
+                "dataUid": "uid-12"
               },
               {
                 "sourceTag": "text",
@@ -115,13 +127,13 @@
                   "class": "btn",
                   "name": "btn-pause"
                 },
-                "dataUid": "uid-12"
+                "dataUid": "uid-13"
               }
             ],
             "properties": {
               "class": "bottom"
             },
-            "dataUid": "uid-7"
+            "dataUid": "uid-8"
           }
         ],
         "properties": {
@@ -169,6 +181,12 @@
         "color": "#00ffff"
       }
     },
+    "snapped": {
+      "content": {
+        "fontSize": "10",
+        "color": "#44ff88"
+      }
+    },
     "piece-info": {
       "content": {
         "fontSize": "9",
@@ -213,7 +231,7 @@
         "column": 0
       },
       "end": {
-        "line": 26,
+        "line": 28,
         "column": 8
       }
     },
@@ -257,143 +275,163 @@
         "column": 10
       }
     },
-    "piece-info": {
+    "snapped": {
       "start": {
         "line": 6,
         "column": 4
       },
       "end": {
         "line": 6,
+        "column": 12
+      }
+    },
+    "piece-info": {
+      "start": {
+        "line": 7,
+        "column": 4
+      },
+      "end": {
+        "line": 7,
         "column": 15
       }
     },
     "btn": {
       "start": {
-        "line": 7,
+        "line": 8,
         "column": 4
       },
       "end": {
-        "line": 7,
+        "line": 8,
         "column": 8
       }
     },
     "hint-btn": {
       "start": {
-        "line": 9,
+        "line": 10,
         "column": 4
       },
       "end": {
-        "line": 9,
+        "line": 10,
         "column": 13
       }
     },
     "uid-2": {
       "start": {
-        "line": 12,
+        "line": 13,
         "column": 2
       },
       "end": {
-        "line": 25,
+        "line": 27,
         "column": 14
       }
     },
     "uid-3": {
       "start": {
-        "line": 13,
+        "line": 14,
         "column": 4
       },
       "end": {
-        "line": 17,
+        "line": 19,
         "column": 16
       }
     },
     "uid-4": {
       "start": {
-        "line": 14,
+        "line": 15,
         "column": 6
       },
       "end": {
-        "line": 14,
+        "line": 15,
         "column": 54
       }
     },
     "uid-5": {
       "start": {
-        "line": 15,
+        "line": 16,
         "column": 6
       },
       "end": {
-        "line": 15,
-        "column": 54
+        "line": 16,
+        "column": 53
       }
     },
     "uid-6": {
       "start": {
-        "line": 16,
+        "line": 17,
         "column": 6
       },
       "end": {
-        "line": 16,
-        "column": 50
+        "line": 17,
+        "column": 54
       }
     },
     "uid-7": {
       "start": {
         "line": 18,
-        "column": 4
+        "column": 6
       },
       "end": {
-        "line": 24,
-        "column": 16
+        "line": 18,
+        "column": 50
       }
     },
     "uid-8": {
       "start": {
-        "line": 19,
-        "column": 6
+        "line": 20,
+        "column": 4
       },
       "end": {
-        "line": 19,
-        "column": 69
+        "line": 26,
+        "column": 16
       }
     },
     "uid-9": {
       "start": {
-        "line": 20,
+        "line": 21,
         "column": 6
       },
       "end": {
-        "line": 20,
-        "column": 51
+        "line": 21,
+        "column": 69
       }
     },
     "uid-10": {
       "start": {
-        "line": 21,
+        "line": 22,
         "column": 6
       },
       "end": {
-        "line": 21,
-        "column": 56
+        "line": 22,
+        "column": 51
       }
     },
     "uid-11": {
       "start": {
-        "line": 22,
+        "line": 23,
         "column": 6
       },
       "end": {
-        "line": 22,
-        "column": 55
+        "line": 23,
+        "column": 56
       }
     },
     "uid-12": {
       "start": {
-        "line": 23,
+        "line": 24,
         "column": 6
       },
       "end": {
-        "line": 23,
+        "line": 24,
+        "column": 55
+      }
+    },
+    "uid-13": {
+      "start": {
+        "line": 25,
+        "column": 6
+      },
+      "end": {
+        "line": 25,
         "column": 50
       }
     }

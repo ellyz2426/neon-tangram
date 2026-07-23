@@ -300,9 +300,9 @@ export const ACHIEVEMENTS = [
   { id: 'streak_10', name: 'Unstoppable', desc: 'Win 10 puzzles in a row' },
   { id: 'fast_60', name: 'Quick Thinker', desc: 'Complete in under 60 seconds' },
   { id: 'fast_30', name: 'Lightning', desc: 'Complete in under 30 seconds' },
-  { id: 'all_easy', name: 'Easy Sweep', desc: 'Complete all 5 Easy levels' },
-  { id: 'all_medium', name: 'Medium Sweep', desc: 'Complete all 5 Medium levels' },
-  { id: 'all_hard', name: 'Hard Sweep', desc: 'Complete all 5 Hard levels' },
+  { id: 'all_easy', name: 'Easy Sweep', desc: 'Complete all 10 Easy puzzles' },
+  { id: 'all_medium', name: 'Medium Sweep', desc: 'Complete all 10 Medium puzzles' },
+  { id: 'all_hard', name: 'Hard Sweep', desc: 'Complete all 10 Hard puzzles' },
   { id: 'total_50', name: 'Tangram Addict', desc: 'Complete 50 total puzzles' },
   { id: 'all_modes', name: 'Well Rounded', desc: 'Win in all 4 game modes' },
 ];
@@ -394,7 +394,8 @@ export class GameSystem extends createSystem({
   targetGroup: Group | null = null;
   selGlow = 0;
   input!: any;
-  stickHeld = false;
+  leftStickHeld = false;
+  rightStickHeld = false;
 
   // Hint system
   hintActive = false;
@@ -415,6 +416,8 @@ export class GameSystem extends createSystem({
   isDragging = false;
   dragPieceIdx = -1;
   lastHovered = -1;
+  dragOffsetX = 0;
+  dragOffsetZ = 0;
 
   onStateChange: (() => void) | null = null;
 
@@ -426,6 +429,7 @@ export class GameSystem extends createSystem({
     this.colorPalette = COLOR_SCHEMES[this.save.colorScheme] || COLOR_SCHEMES['cyan'];
     this.buildTable();
     this.setupAudio();
+    this.setupPointerDrag();
   }
 
   setupAudio() {
@@ -439,6 +443,109 @@ export class GameSystem extends createSystem({
       volume: 0.6,
       positional: false,
     });
+  }
+
+  setupPointerDrag() {
+    const canvas = this.world.renderer.domElement;
+
+    const onDown = (e: PointerEvent) => {
+      if (this.state !== 'playing') return;
+      const pos = this.screenToTable(e);
+      if (!pos) return;
+
+      // Find nearest unsnapped piece to click point
+      let bestIdx = -1;
+      let bestDist = S;
+      for (let i = 0; i < this.pieces.length; i++) {
+        const p = this.pieces[i];
+        if (p.snapped) continue;
+        const dx = p.x - pos.x;
+        const dy = p.y - pos.z;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < bestDist) {
+          bestDist = dist;
+          bestIdx = i;
+        }
+      }
+
+      if (bestIdx >= 0) {
+        const p = this.pieces[bestIdx];
+        this.selectedPiece = bestIdx;
+        this.isDragging = true;
+        this.dragPieceIdx = bestIdx;
+        this.dragOffsetX = p.x - pos.x;
+        this.dragOffsetZ = p.y - pos.z;
+        this.moveHistory.push({
+          pieceIdx: bestIdx,
+          fromX: p.x, fromY: p.y, fromRot: p.rot, fromFlip: p.flipped,
+        });
+        this.playSound('select');
+        this.refreshVisuals();
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    };
+
+    const onMove = (e: PointerEvent) => {
+      if (!this.isDragging || this.dragPieceIdx < 0) return;
+      e.preventDefault();
+      e.stopPropagation();
+
+      const pos = this.screenToTable(e);
+      if (!pos) return;
+
+      const p = this.pieces[this.dragPieceIdx];
+      if (p.snapped) { this.isDragging = false; return; }
+
+      p.x = Math.max(-0.9, Math.min(0.9, pos.x + this.dragOffsetX));
+      p.y = Math.max(-0.65, Math.min(0.65, pos.z + this.dragOffsetZ));
+      p.group.position.x = p.x;
+      p.group.position.z = TABLE_Z + p.y;
+      if (p.hitEntity.object3D) {
+        p.hitEntity.object3D.position.x = p.x;
+        p.hitEntity.object3D.position.z = TABLE_Z + p.y;
+      }
+    };
+
+    const onUp = () => {
+      if (this.isDragging && this.dragPieceIdx >= 0) {
+        this.moves++;
+        this.playSound('move');
+        this.checkSnap(this.dragPieceIdx);
+        this.refreshVisuals();
+      }
+      this.isDragging = false;
+      this.dragPieceIdx = -1;
+    };
+
+    canvas.addEventListener('pointerdown', onDown, { capture: true });
+    canvas.addEventListener('pointermove', onMove, { capture: true });
+    canvas.addEventListener('pointerup', onUp, { capture: true });
+  }
+
+  screenToTable(e: PointerEvent): { x: number; z: number } | null {
+    const canvas = this.world.renderer.domElement;
+    const rect = canvas.getBoundingClientRect();
+    const ndcX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    const ndcY = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+    const camera = this.world.camera;
+    const near = new Vector3(ndcX, ndcY, -1).unproject(camera);
+    const far = new Vector3(ndcX, ndcY, 1).unproject(camera);
+
+    const dx = far.x - near.x;
+    const dy = far.y - near.y;
+    const dz = far.z - near.z;
+
+    const planeY = TABLE_Y + PIECE_DEPTH;
+    if (Math.abs(dy) < 0.001) return null;
+    const t = (planeY - near.y) / dy;
+    if (t < 0) return null;
+
+    return {
+      x: near.x + t * dx,
+      z: (near.z + t * dz) - TABLE_Z,
+    };
   }
 
   playSound(sound: string) {
@@ -867,6 +974,10 @@ export class GameSystem extends createSystem({
     return this.pieces.length === 7 && this.pieces.every(p => p.snapped);
   }
 
+  getSnappedCount(): number {
+    return this.pieces.filter(p => p.snapped).length;
+  }
+
   onWin() {
     this.state = 'won';
     this.winStreak++;
@@ -896,7 +1007,10 @@ export class GameSystem extends createSystem({
     if (this.totalWins >= 50) this.checkAch('total_50');
     for (const d of ['easy', 'medium', 'hard'] as Difficulty[]) {
       let all = true;
-      for (let l = 1; l <= 5; l++) if (!this.save.bestMoves[`${this.mode}-${d}-${l}`]) { all = false; break; }
+      for (let l = 1; l <= 10; l++) {
+        const hasAny = ['classic', 'speed', 'zen', 'challenge'].some(m => this.save.bestMoves[`${m}-${d}-${l}`]);
+        if (!hasAny) { all = false; break; }
+      }
       if (all) this.checkAch(`all_${d}`);
     }
     saveSave(this.save);
@@ -1035,20 +1149,26 @@ export class GameSystem extends createSystem({
       const right = this.input?.xr?.gamepads?.right;
       const left = this.input?.xr?.gamepads?.left;
       if (this.selectedPiece >= 0) {
-        const stick = right?.getAxesValues(InputComponent.Thumbstick) || left?.getAxesValues(InputComponent.Thumbstick);
-        if (stick) {
-          if (Math.abs(stick.x) > 0.7 || Math.abs(stick.y) > 0.7) {
-            if (!this.stickHeld) {
-              this.stickHeld = true;
-              if (Math.abs(stick.x) > Math.abs(stick.y)) {
-                this.rotatePiece(this.selectedPiece, stick.x > 0 ? 1 : -1);
-              } else {
-                this.movePiece(this.selectedPiece, 0, stick.y > 0 ? MOVE_STEP : -MOVE_STEP);
-              }
-            }
-          } else {
-            this.stickHeld = false;
+        // Left stick: move piece in X/Z
+        const leftStick = left?.getAxesValues(InputComponent.Thumbstick);
+        if (leftStick && (Math.abs(leftStick.x) > 0.5 || Math.abs(leftStick.y) > 0.5)) {
+          if (!this.leftStickHeld) {
+            this.leftStickHeld = true;
+            if (Math.abs(leftStick.x) > 0.3) this.movePiece(this.selectedPiece, leftStick.x > 0 ? MOVE_STEP : -MOVE_STEP, 0);
+            if (Math.abs(leftStick.y) > 0.3) this.movePiece(this.selectedPiece, 0, leftStick.y > 0 ? MOVE_STEP : -MOVE_STEP);
           }
+        } else {
+          this.leftStickHeld = false;
+        }
+        // Right stick: rotate piece
+        const rightStick = right?.getAxesValues(InputComponent.Thumbstick);
+        if (rightStick && Math.abs(rightStick.x) > 0.5) {
+          if (!this.rightStickHeld) {
+            this.rightStickHeld = true;
+            this.rotatePiece(this.selectedPiece, rightStick.x > 0 ? 1 : -1);
+          }
+        } else {
+          this.rightStickHeld = false;
         }
         if (right?.getButtonDown(InputComponent.A_Button) || left?.getButtonDown(InputComponent.X_Button)) {
           this.flipPiece(this.selectedPiece);

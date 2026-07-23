@@ -4,6 +4,7 @@
     .top { flexDirection: row; alignItems: center; justifyContent: space-between; gap: 8; width: 100%; }
     .bottom { flexDirection: row; alignItems: center; justifyContent: center; gap: 6; }
     .label { fontSize: 11; color: #00ffff; }
+    .snapped { fontSize: 10; color: #44ff88; }
     .piece-info { fontSize: 9; color: #88aacc; }
     .btn { fontSize: 10; color: #ffffff; backgroundColor: #1a1a3a; padding: 4; borderRadius: 4; borderColor: #00ffff33; borderWidth: 1; cursor: pointer; }
     .btn:hover { backgroundColor: #00aacc; }
@@ -13,6 +14,7 @@
   <container class="root">
     <container class="top">
       <text class="label" name="level">Easy Lv1</text>
+      <text class="snapped" name="snapped">0/7</text>
       <text class="label" name="moves">Moves: 0</text>
       <text class="label" name="timer">0:00</text>
     </container>

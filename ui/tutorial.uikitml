@@ -9,10 +9,12 @@
   <container class="root">
     <text class="title">How to Play</text>
     <text class="text">Arrange all 7 tangram pieces to fill the target silhouette on the table.</text>
+    <text class="section">Mouse Controls</text>
+    <text class="text">Click and drag pieces directly to position them on the table. Use Q/E to rotate and F to flip while dragging.</text>
     <text class="section">Keyboard Controls</text>
     <text class="text">Click a piece to select it. Arrows/WASD to move. Q/E to rotate 45 degrees. F to flip the parallelogram. Tab to cycle pieces. H for a hint. Z to undo. R to restart. Esc to pause.</text>
     <text class="section">XR Controls</text>
-    <text class="text">Point and click to select pieces. Thumbstick to move/rotate. A/X to flip. B/Y to pause.</text>
+    <text class="text">Point and click to select pieces. Left stick to move piece. Right stick to rotate. A/X to flip. B/Y to pause.</text>
     <text class="section">Game Modes</text>
     <text class="text">Classic: Solve at your own pace. Speed: 2-minute time limit. Zen: No timer, no pressure. Challenge: Limited to 50 moves.</text>
     <text class="section">Tips</text>

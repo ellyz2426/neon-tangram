@@ -28,6 +28,7 @@ export class UISystem extends createSystem({
   lastState = '';
   lastMoves = -1;
   lastTimer = -1;
+  lastSnapped = -1;
   hudDoc: UIKitDocument | null = null;
   resultsDoc: UIKitDocument | null = null;
   levelSelectDoc: UIKitDocument | null = null;
@@ -292,12 +293,28 @@ export class UISystem extends createSystem({
           this.setText(this.hudDoc, 'piece-info', 'Click a piece');
         }
       }
+      // Snapped count
+      const sc = this.game.getSnappedCount();
+      if (sc !== this.lastSnapped) {
+        this.lastSnapped = sc;
+        this.setText(this.hudDoc, 'snapped', `${sc}/7`);
+        if (sc > 0) {
+          (this.hudDoc.getElementById('snapped') as UIKit.Text)?.setProperties({ color: sc >= 7 ? '#00ff44' : '#44ff88' });
+        }
+      }
       const ti = Math.floor(this.game.timer);
       if (ti !== this.lastTimer) {
         this.lastTimer = ti;
         if (this.game.mode === 'speed') {
           const rem = Math.max(0, 120 - ti);
           this.setText(this.hudDoc, 'timer', `${Math.floor(rem / 60)}:${(rem % 60 < 10 ? '0' : '')}${rem % 60}`);
+          // Timer warning colors
+          const timerEl = this.hudDoc.getElementById('timer') as UIKit.Text;
+          if (timerEl) {
+            if (rem <= 10) timerEl.setProperties({ color: '#ff2244' });
+            else if (rem <= 30) timerEl.setProperties({ color: '#ffaa00' });
+            else timerEl.setProperties({ color: '#00ffff' });
+          }
         } else if (this.game.mode !== 'zen') {
           this.setText(this.hudDoc, 'timer', `${Math.floor(ti / 60)}:${(ti % 60 < 10 ? '0' : '')}${ti % 60}`);
         } else this.setText(this.hudDoc, 'timer', 'Zen');

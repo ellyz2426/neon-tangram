@@ -33,7 +33,7 @@
             "sourceTag": "text",
             "type": "custom",
             "children": [
-              "Keyboard Controls"
+              "Mouse Controls"
             ],
             "properties": {
               "class": "section"
@@ -44,7 +44,7 @@
             "sourceTag": "text",
             "type": "custom",
             "children": [
-              "Click a piece to select it. Arrows/WASD to move. Q/E to rotate 45 degrees. F to flip the parallelogram. Tab to cycle pieces. H for a hint. Z to undo. R to restart. Esc to pause."
+              "Click and drag pieces directly to position them on the table. Use Q/E to rotate and F to flip while dragging."
             ],
             "properties": {
               "class": "text"
@@ -55,7 +55,7 @@
             "sourceTag": "text",
             "type": "custom",
             "children": [
-              "XR Controls"
+              "Keyboard Controls"
             ],
             "properties": {
               "class": "section"
@@ -66,7 +66,7 @@
             "sourceTag": "text",
             "type": "custom",
             "children": [
-              "Point and click to select pieces. Thumbstick to move/rotate. A/X to flip. B/Y to pause."
+              "Click a piece to select it. Arrows/WASD to move. Q/E to rotate 45 degrees. F to flip the parallelogram. Tab to cycle pieces. H for a hint. Z to undo. R to restart. Esc to pause."
             ],
             "properties": {
               "class": "text"
@@ -77,7 +77,7 @@
             "sourceTag": "text",
             "type": "custom",
             "children": [
-              "Game Modes"
+              "XR Controls"
             ],
             "properties": {
               "class": "section"
@@ -88,7 +88,7 @@
             "sourceTag": "text",
             "type": "custom",
             "children": [
-              "Classic: Solve at your own pace. Speed: 2-minute time limit. Zen: No timer, no pressure. Challenge: Limited to 50 moves."
+              "Point and click to select pieces. Left stick to move piece. Right stick to rotate. A/X to flip. B/Y to pause."
             ],
             "properties": {
               "class": "text"
@@ -99,7 +99,7 @@
             "sourceTag": "text",
             "type": "custom",
             "children": [
-              "Tips"
+              "Game Modes"
             ],
             "properties": {
               "class": "section"
@@ -110,12 +110,34 @@
             "sourceTag": "text",
             "type": "custom",
             "children": [
-              "Pieces snap when close to correct position + rotation. Use hints when stuck -- they cost 1 move. Start with Easy puzzles to learn piece shapes."
+              "Classic: Solve at your own pace. Speed: 2-minute time limit. Zen: No timer, no pressure. Challenge: Limited to 50 moves."
             ],
             "properties": {
               "class": "text"
             },
             "dataUid": "uid-12"
+          },
+          {
+            "sourceTag": "text",
+            "type": "custom",
+            "children": [
+              "Tips"
+            ],
+            "properties": {
+              "class": "section"
+            },
+            "dataUid": "uid-13"
+          },
+          {
+            "sourceTag": "text",
+            "type": "custom",
+            "children": [
+              "Pieces snap when close to correct position + rotation. Use hints when stuck -- they cost 1 move. Start with Easy puzzles to learn piece shapes."
+            ],
+            "properties": {
+              "class": "text"
+            },
+            "dataUid": "uid-14"
           },
           {
             "sourceTag": "text",
@@ -127,7 +149,7 @@
               "class": "back",
               "name": "btn-back"
             },
-            "dataUid": "uid-13"
+            "dataUid": "uid-15"
           }
         ],
         "properties": {
@@ -186,7 +208,7 @@
         "column": 0
       },
       "end": {
-        "line": 21,
+        "line": 23,
         "column": 8
       }
     },
@@ -246,7 +268,7 @@
         "column": 2
       },
       "end": {
-        "line": 20,
+        "line": 22,
         "column": 14
       }
     },
@@ -277,7 +299,7 @@
       },
       "end": {
         "line": 11,
-        "column": 50
+        "column": 47
       }
     },
     "uid-6": {
@@ -287,7 +309,7 @@
       },
       "end": {
         "line": 12,
-        "column": 207
+        "column": 139
       }
     },
     "uid-7": {
@@ -297,7 +319,7 @@
       },
       "end": {
         "line": 13,
-        "column": 44
+        "column": 50
       }
     },
     "uid-8": {
@@ -307,7 +329,7 @@
       },
       "end": {
         "line": 14,
-        "column": 117
+        "column": 207
       }
     },
     "uid-9": {
@@ -317,7 +339,7 @@
       },
       "end": {
         "line": 15,
-        "column": 43
+        "column": 44
       }
     },
     "uid-10": {
@@ -327,7 +349,7 @@
       },
       "end": {
         "line": 16,
-        "column": 150
+        "column": 139
       }
     },
     "uid-11": {
@@ -337,7 +359,7 @@
       },
       "end": {
         "line": 17,
-        "column": 37
+        "column": 43
       }
     },
     "uid-12": {
@@ -347,7 +369,7 @@
       },
       "end": {
         "line": 18,
-        "column": 173
+        "column": 150
       }
     },
     "uid-13": {
@@ -357,6 +379,26 @@
       },
       "end": {
         "line": 19,
+        "column": 37
+      }
+    },
+    "uid-14": {
+      "start": {
+        "line": 20,
+        "column": 4
+      },
+      "end": {
+        "line": 20,
+        "column": 173
+      }
+    },
+    "uid-15": {
+      "start": {
+        "line": 21,
+        "column": 4
+      },
+      "end": {
+        "line": 21,
         "column": 50
       }
     }

@@ -27,3 +27,19 @@
 1:22:00 AM [vite] (client) page reload src/game-system.ts
 1:22:17 AM [vite] (client) page reload src/game-system.ts
 1:22:41 AM [vite] (client) page reload src/game-system.ts
+
+🥽 IWSDK Dev Summary (Development):
+  - Device: metaQuest3
+  - Runtime injected: 1120.1KB
+  - Activation mode: localhost
+  - AI: agent mode (WebSocket at /__iwer_mcp)
+  - Note: Runtime only activates on localhost/local networks
+
+
+🥽 IWSDK Dev Summary (Development):
+  - Device: metaQuest3
+  - Runtime injected: 1120.1KB
+  - Activation mode: localhost
+  - AI: agent mode (WebSocket at /__iwer_mcp)
+  - Note: Runtime only activates on localhost/local networks
+
