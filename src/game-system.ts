@@ -685,6 +685,32 @@ export class GameSystem extends createSystem({
   }
 
   // === Win celebration ===
+  // Snap burst - small particle burst at snap location
+  spawnSnapBurst(x: number, z: number, pieceIdx: number) {
+    const c = this.colorPalette[pieceIdx] || [0x00ffff, 0x009999];
+    for (let i = 0; i < 12; i++) {
+      const geo = new SphereGeometry(0.01, 4, 4);
+      const mat = new MeshStandardMaterial({
+        color: c[0],
+        emissive: new Color(c[0]),
+        emissiveIntensity: 2.0,
+        transparent: true,
+        opacity: 1,
+      });
+      const mesh = new Mesh(geo, mat);
+      mesh.position.set(x, TABLE_Y + 0.05, z);
+      this.world.scene.add(mesh);
+      const angle = (i / 12) * Math.PI * 2;
+      this.celebParticles.push({
+        mesh,
+        vx: Math.cos(angle) * 0.8,
+        vy: 0.5 + Math.random() * 0.5,
+        vz: Math.sin(angle) * 0.8,
+        life: 0.5 + Math.random() * 0.3,
+      });
+    }
+  }
+
   spawnCelebration() {
     this.clearCelebration();
     const colors = [0x00ffff, 0xff00ff, 0xffff00, 0x00ff44, 0xff4400, 0x4488ff];
@@ -820,6 +846,7 @@ export class GameSystem extends createSystem({
         p.hitEntity.object3D.position.z = TABLE_Z + p.targetY;
       }
       this.playSound('snap');
+      this.spawnSnapBurst(p.targetX, TABLE_Z + p.targetY, idx);
       // Auto-select next unsnapped piece
       if (!this.isSolved()) {
         let next = (idx + 1) % this.pieces.length;
@@ -1077,6 +1104,17 @@ export class GameSystem extends createSystem({
         if (mesh) {
           const mat = mesh.material as MeshStandardMaterial;
           mat.emissiveIntensity = 0.6 + 0.3 * Math.sin(this.selGlow);
+        }
+      }
+
+      // Subtle pulse on snapped pieces
+      for (let i = 0; i < this.pieces.length; i++) {
+        if (this.pieces[i].snapped && i !== this.selectedPiece) {
+          const mesh = this.pieces[i].group.children[0] as Mesh;
+          if (mesh) {
+            const mat = mesh.material as MeshStandardMaterial;
+            mat.emissiveIntensity = 0.6 + 0.1 * Math.sin(this.selGlow * 0.5 + i * 0.8);
+          }
         }
       }
     } else if (this.state === 'paused') {
