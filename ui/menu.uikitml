@@ -1,0 +1,23 @@
+<panel>
+  <style>
+    .root { flexDirection: column; alignItems: center; gap: 12; padding: 20; backgroundColor: #0a0a2aee; borderRadius: 12; borderColor: #00ffff44; borderWidth: 1; }
+    .title { fontSize: 28; color: #00ffff; }
+    .subtitle { fontSize: 12; color: #88aacc; }
+    .btn { fontSize: 14; color: #ffffff; backgroundColor: #1a1a3a; padding: 8; borderRadius: 6; borderColor: #00ffff44; borderWidth: 1; width: 200; textAlign: center; cursor: pointer; }
+    .btn:hover { backgroundColor: #00aacc; }
+    .row { flexDirection: row; gap: 8; }
+  </style>
+  <container class="root">
+    <text class="title">NEON TANGRAM</text>
+    <text class="subtitle">Tangram Puzzle</text>
+    <text class="btn" name="btn-classic">Classic Mode</text>
+    <text class="btn" name="btn-speed">Speed Mode</text>
+    <text class="btn" name="btn-zen">Zen Mode</text>
+    <text class="btn" name="btn-challenge">Challenge Mode</text>
+    <container class="row">
+      <text class="btn" name="btn-settings">Settings</text>
+      <text class="btn" name="btn-achievements">Trophies</text>
+    </container>
+    <text class="btn" name="btn-tutorial">How to Play</text>
+  </container>
+</panel>

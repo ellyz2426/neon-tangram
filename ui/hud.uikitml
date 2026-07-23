@@ -1,0 +1,16 @@
+<panel>
+  <style>
+    .root { flexDirection: row; alignItems: center; justifyContent: space-between; gap: 8; padding: 6; backgroundColor: #0a0a2acc; borderRadius: 8; borderColor: #00ffff33; borderWidth: 1; }
+    .label { fontSize: 11; color: #00ffff; }
+    .btn { fontSize: 10; color: #ffffff; backgroundColor: #1a1a3a; padding: 4; borderRadius: 4; borderColor: #00ffff33; borderWidth: 1; cursor: pointer; }
+    .btn:hover { backgroundColor: #00aacc; }
+  </style>
+  <container class="root">
+    <text class="label" name="level">Easy Lv1</text>
+    <text class="label" name="moves">Moves: 0</text>
+    <text class="label" name="timer">0:00</text>
+    <text class="btn" name="btn-undo">Undo</text>
+    <text class="btn" name="btn-restart">Reset</text>
+    <text class="btn" name="btn-pause">II</text>
+  </container>
+</panel>

@@ -1,0 +1,34 @@
+<panel>
+  <style>
+    .root { flexDirection: column; alignItems: center; gap: 6; padding: 14; backgroundColor: #0a0a2aee; borderRadius: 12; borderColor: #00ffff44; borderWidth: 1; }
+    .title { fontSize: 20; color: #00ffff; }
+    .count { fontSize: 12; color: #ffcc00; }
+    .ach { fontSize: 10; color: #aaccee; }
+    .back { fontSize: 12; color: #88aacc; cursor: pointer; }
+  </style>
+  <container class="root">
+    <text class="title">Achievements</text>
+    <text class="count" name="ach-count">0 / 20</text>
+    <text class="ach" name="ach-0">[ ] ---</text>
+    <text class="ach" name="ach-1">[ ] ---</text>
+    <text class="ach" name="ach-2">[ ] ---</text>
+    <text class="ach" name="ach-3">[ ] ---</text>
+    <text class="ach" name="ach-4">[ ] ---</text>
+    <text class="ach" name="ach-5">[ ] ---</text>
+    <text class="ach" name="ach-6">[ ] ---</text>
+    <text class="ach" name="ach-7">[ ] ---</text>
+    <text class="ach" name="ach-8">[ ] ---</text>
+    <text class="ach" name="ach-9">[ ] ---</text>
+    <text class="ach" name="ach-10">[ ] ---</text>
+    <text class="ach" name="ach-11">[ ] ---</text>
+    <text class="ach" name="ach-12">[ ] ---</text>
+    <text class="ach" name="ach-13">[ ] ---</text>
+    <text class="ach" name="ach-14">[ ] ---</text>
+    <text class="ach" name="ach-15">[ ] ---</text>
+    <text class="ach" name="ach-16">[ ] ---</text>
+    <text class="ach" name="ach-17">[ ] ---</text>
+    <text class="ach" name="ach-18">[ ] ---</text>
+    <text class="ach" name="ach-19">[ ] ---</text>
+    <text class="back" name="btn-back">Back</text>
+  </container>
+</panel>

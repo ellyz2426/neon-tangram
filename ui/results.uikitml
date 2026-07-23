@@ -1,0 +1,20 @@
+<panel>
+  <style>
+    .root { flexDirection: column; alignItems: center; gap: 10; padding: 20; backgroundColor: #0a0a2aee; borderRadius: 12; borderColor: #00ffff44; borderWidth: 1; }
+    .title { fontSize: 24; color: #00ffff; }
+    .stars { fontSize: 20; color: #ffcc00; }
+    .info { fontSize: 13; color: #aaccee; }
+    .btn { fontSize: 14; color: #ffffff; backgroundColor: #1a1a3a; padding: 8; borderRadius: 6; borderColor: #00ffff44; borderWidth: 1; width: 180; textAlign: center; cursor: pointer; }
+    .btn:hover { backgroundColor: #00aacc; }
+  </style>
+  <container class="root">
+    <text class="title" name="result-title">Puzzle Complete!</text>
+    <text class="stars" name="stars">***</text>
+    <text class="info" name="result-moves">Moves: 0</text>
+    <text class="info" name="result-time">Time: 0:00</text>
+    <text class="info" name="result-best"></text>
+    <text class="btn" name="btn-next">Next Level</text>
+    <text class="btn" name="btn-replay">Replay</text>
+    <text class="btn" name="btn-menu">Main Menu</text>
+  </container>
+</panel>
