@@ -1,0 +1,20 @@
+<panel>
+  <style>
+    .root { flexDirection: column; alignItems: center; gap: 10; padding: 16; backgroundColor: #0a0a2aee; borderRadius: 12; borderColor: #00ffff44; borderWidth: 1; }
+    .title { fontSize: 20; color: #00ffff; }
+    .stat { fontSize: 12; color: #aaccee; width: 240; }
+    .divider { width: 200; height: 1; backgroundColor: #00ffff22; }
+    .back { fontSize: 12; color: #88aacc; cursor: pointer; }
+  </style>
+  <container class="root">
+    <text class="title">Statistics</text>
+    <container class="divider"></container>
+    <text class="stat" name="stat-solves">Puzzles Solved: 0</text>
+    <text class="stat" name="stat-time">Total Play Time: 0m</text>
+    <text class="stat" name="stat-ach">Achievements: 0 / 20</text>
+    <text class="stat" name="stat-streak">Best Win Streak: 0</text>
+    <text class="stat" name="stat-progress">Progress: Easy 0/20 | Med 0/20 | Hard 0/20</text>
+    <container class="divider"></container>
+    <text class="back" name="btn-back">Back</text>
+  </container>
+</panel>

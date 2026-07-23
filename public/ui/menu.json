@@ -22,7 +22,7 @@
             "sourceTag": "text",
             "type": "custom",
             "children": [
-              "Tangram Puzzle"
+              "Spatial Puzzle"
             ],
             "properties": {
               "class": "subtitle"
@@ -112,14 +112,36 @@
             "dataUid": "uid-9"
           },
           {
-            "sourceTag": "text",
+            "sourceTag": "container",
             "type": "custom",
             "children": [
-              "How to Play"
+              {
+                "sourceTag": "text",
+                "type": "custom",
+                "children": [
+                  "How to Play"
+                ],
+                "properties": {
+                  "class": "btn",
+                  "name": "btn-tutorial"
+                },
+                "dataUid": "uid-13"
+              },
+              {
+                "sourceTag": "text",
+                "type": "custom",
+                "children": [
+                  "Stats"
+                ],
+                "properties": {
+                  "class": "btn",
+                  "name": "btn-stats"
+                },
+                "dataUid": "uid-14"
+              }
             ],
             "properties": {
-              "class": "btn",
-              "name": "btn-tutorial"
+              "class": "small-row"
             },
             "dataUid": "uid-12"
           }
@@ -180,6 +202,12 @@
         "flexDirection": "row",
         "gap": "8"
       }
+    },
+    "small-row": {
+      "content": {
+        "flexDirection": "row",
+        "gap": "8"
+      }
     }
   },
   "ranges": {
@@ -189,7 +217,7 @@
         "column": 0
       },
       "end": {
-        "line": 22,
+        "line": 26,
         "column": 8
       }
     },
@@ -243,114 +271,144 @@
         "column": 8
       }
     },
+    "small-row": {
+      "start": {
+        "line": 8,
+        "column": 4
+      },
+      "end": {
+        "line": 8,
+        "column": 14
+      }
+    },
     "uid-2": {
       "start": {
-        "line": 9,
+        "line": 10,
         "column": 2
       },
       "end": {
-        "line": 21,
+        "line": 25,
         "column": 14
       }
     },
     "uid-3": {
       "start": {
-        "line": 10,
+        "line": 11,
         "column": 4
       },
       "end": {
-        "line": 10,
+        "line": 11,
         "column": 43
       }
     },
     "uid-4": {
       "start": {
-        "line": 11,
+        "line": 12,
         "column": 4
       },
       "end": {
-        "line": 11,
+        "line": 12,
         "column": 48
       }
     },
     "uid-5": {
       "start": {
-        "line": 12,
+        "line": 13,
         "column": 4
       },
       "end": {
-        "line": 12,
+        "line": 13,
         "column": 60
       }
     },
     "uid-6": {
       "start": {
-        "line": 13,
+        "line": 14,
         "column": 4
       },
       "end": {
-        "line": 13,
+        "line": 14,
         "column": 56
       }
     },
     "uid-7": {
       "start": {
-        "line": 14,
+        "line": 15,
         "column": 4
       },
       "end": {
-        "line": 14,
+        "line": 15,
         "column": 52
       }
     },
     "uid-8": {
       "start": {
-        "line": 15,
+        "line": 16,
         "column": 4
       },
       "end": {
-        "line": 15,
+        "line": 16,
         "column": 64
       }
     },
     "uid-9": {
       "start": {
-        "line": 16,
+        "line": 17,
         "column": 4
       },
       "end": {
-        "line": 19,
+        "line": 20,
         "column": 16
       }
     },
     "uid-10": {
       "start": {
-        "line": 17,
+        "line": 18,
         "column": 6
       },
       "end": {
-        "line": 17,
+        "line": 18,
         "column": 59
       }
     },
     "uid-11": {
       "start": {
-        "line": 18,
+        "line": 19,
         "column": 6
       },
       "end": {
-        "line": 18,
+        "line": 19,
         "column": 63
       }
     },
     "uid-12": {
       "start": {
-        "line": 20,
+        "line": 21,
         "column": 4
       },
       "end": {
-        "line": 20,
-        "column": 60
+        "line": 24,
+        "column": 16
+      }
+    },
+    "uid-13": {
+      "start": {
+        "line": 22,
+        "column": 6
+      },
+      "end": {
+        "line": 22,
+        "column": 62
+      }
+    },
+    "uid-14": {
+      "start": {
+        "line": 23,
+        "column": 6
+      },
+      "end": {
+        "line": 23,
+        "column": 53
       }
     }
   }

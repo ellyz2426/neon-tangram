@@ -10,11 +10,11 @@ import {
   AmbientLight,
   PointLight,
   SphereGeometry,
-  TorusGeometry,
   Entity,
 } from '@iwsdk/core';
 import { GameSystem } from './game-system';
 import { UISystem } from './ui-system';
+import { EnvSystem } from './env-system';
 
 const container = document.getElementById('scene-container') as HTMLDivElement;
 
@@ -30,20 +30,25 @@ const world = await World.create(container, {
 // === Holodeck Environment ===
 const scene = world.scene;
 
-const ambient = new AmbientLight(new Color('#334455'), 0.4);
+const ambient = new AmbientLight(new Color('#223344'), 0.5);
 scene.add(ambient);
 
-const light1 = new PointLight(new Color('#00ffff'), 1.5, 30);
+const light1 = new PointLight(new Color('#00ffff'), 2.0, 30);
 light1.position.set(0, 4, 0);
 scene.add(light1);
 
-const light2 = new PointLight(new Color('#8844ff'), 0.8, 20);
+const light2 = new PointLight(new Color('#8844ff'), 1.0, 20);
 light2.position.set(-3, 3, -2);
 scene.add(light2);
 
-const light3 = new PointLight(new Color('#ff4488'), 0.6, 20);
+const light3 = new PointLight(new Color('#ff4488'), 0.8, 20);
 light3.position.set(3, 3, 2);
 scene.add(light3);
+
+// Focused puzzle light
+const puzzleLight = new PointLight(new Color('#ffffff'), 0.6, 5);
+puzzleLight.position.set(0, 2.5, -1.8);
+scene.add(puzzleLight);
 
 // Grid floor
 const floorGeo = new BoxGeometry(20, 0.01, 20, 40, 1, 40);
@@ -81,7 +86,7 @@ const ceil = new Mesh(ceilGeo, ceilMat);
 ceil.position.y = 5;
 scene.add(ceil);
 
-// Walls
+// Walls - darker, more immersive
 for (let i = 0; i < 4; i++) {
   const wallGeo = new BoxGeometry(20, 5, 0.01, 40, 10, 1);
   const wallMat = new MeshStandardMaterial({
@@ -99,6 +104,22 @@ for (let i = 0; i < 4; i++) {
   else if (i === 2) { wall.rotation.y = Math.PI / 2; wall.position.x = -10; }
   else { wall.rotation.y = Math.PI / 2; wall.position.x = 10; }
   scene.add(wall);
+
+  // Solid wall backing for depth
+  const solidWallGeo = new BoxGeometry(20, 5, 0.02);
+  const solidWallMat = new MeshStandardMaterial({
+    color: new Color('#020208'),
+    emissive: new Color('#010104'),
+    emissiveIntensity: 0.05,
+  });
+  const solidWall = new Mesh(solidWallGeo, solidWallMat);
+  solidWall.position.copy(wall.position);
+  solidWall.rotation.copy(wall.rotation);
+  if (i === 0) solidWall.position.z -= 0.01;
+  else if (i === 1) solidWall.position.z += 0.01;
+  else if (i === 2) solidWall.position.x -= 0.01;
+  else solidWall.position.x += 0.01;
+  scene.add(solidWall);
 }
 
 // Accent pillars
@@ -120,17 +141,22 @@ for (let i = 0; i < 4; i++) {
 }
 
 // Ambient orbs
-for (let i = 0; i < 6; i++) {
+for (let i = 0; i < 8; i++) {
   const orbGeo = new SphereGeometry(0.08, 16, 16);
+  const colors = [0x00ffff, 0x8844ff, 0xff4488, 0x00ff44];
   const orbMat = new MeshStandardMaterial({
-    color: new Color('#00ffff'),
-    emissive: new Color('#00ffff'),
+    color: new Color(colors[i % colors.length]),
+    emissive: new Color(colors[i % colors.length]),
     emissiveIntensity: 1.2,
     transparent: true,
     opacity: 0.5,
   });
   const orb = new Mesh(orbGeo, orbMat);
-  orb.position.set((Math.random() - 0.5) * 10, 1 + Math.random() * 3, (Math.random() - 0.5) * 10);
+  orb.position.set(
+    (Math.random() - 0.5) * 10,
+    1 + Math.random() * 3,
+    (Math.random() - 0.5) * 10
+  );
   scene.add(orb);
 }
 
@@ -146,6 +172,7 @@ const panelConfigs = [
   { key: 'pause', config: './ui/pause.json', pos: [0, panelY, panelZ] as [number, number, number], visible: false },
   { key: 'achievements', config: './ui/achpanel.json', pos: [0, panelY, panelZ] as [number, number, number], visible: false },
   { key: 'tutorial', config: './ui/tutorial.json', pos: [0, panelY, panelZ] as [number, number, number], visible: false },
+  { key: 'stats', config: './ui/stats.json', pos: [0, panelY, panelZ] as [number, number, number], visible: false },
 ];
 
 const panelEntities: Record<string, Entity> = {};
@@ -161,8 +188,12 @@ for (const pc of panelConfigs) {
 }
 
 // === Register Systems ===
+world.registerSystem(EnvSystem);
 world.registerSystem(GameSystem);
 world.registerSystem(UISystem);
+
+const envSystem = world.getSystem(EnvSystem)!;
+envSystem.setRefs({ world });
 
 const gameSystem = world.getSystem(GameSystem)!;
 gameSystem.setRefs({ world, panelEntities, panelPositions });

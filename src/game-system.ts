@@ -12,40 +12,39 @@ import {
   ExtrudeGeometry,
   RayInteractable,
   Pressed,
+  Hovered,
   InputComponent,
   PanelUI,
   DoubleSide,
   EdgesGeometry,
   LineBasicMaterial,
   LineSegments,
-  Vector2,
+  AudioSource,
+  AudioUtils,
+  SphereGeometry,
+  AdditiveBlending,
+  Vector3,
 } from '@iwsdk/core';
 
 export type GameMode = 'classic' | 'speed' | 'zen' | 'challenge';
 export type GameState = 'menu' | 'playing' | 'paused' | 'won' | 'levelselect' | 'settings' | 'achievements' | 'tutorial';
 export type Difficulty = 'easy' | 'medium' | 'hard';
-
-// Tangram piece types
 export type PieceType = 'lgTri1' | 'lgTri2' | 'mdTri' | 'smTri1' | 'smTri2' | 'square' | 'para';
 
 const PIECE_DEPTH = 0.03;
-const S = 0.3; // base scale unit (half of tangram square side)
+const S = 0.3;
 
-// Piece shapes as polygon vertices (centered roughly at origin) in local coords
-// Standard tangram from a 1x1 square, scaled by S
 function makePieceShape(type: PieceType): Shape {
   const s = new Shape();
   switch (type) {
     case 'lgTri1':
     case 'lgTri2':
-      // Large right triangle: hypotenuse = full side = 2*S
       s.moveTo(-S, -S / 2);
       s.lineTo(S, -S / 2);
       s.lineTo(0, S / 2);
       s.closePath();
       break;
     case 'mdTri':
-      // Medium triangle: hypotenuse = S*sqrt(2), legs = S
       { const h = S * 0.5;
         s.moveTo(-h, -h / 2);
         s.lineTo(h, -h / 2);
@@ -55,7 +54,6 @@ function makePieceShape(type: PieceType): Shape {
       break;
     case 'smTri1':
     case 'smTri2':
-      // Small right triangle: legs = S/2
       { const q = S * 0.35;
         s.moveTo(-q, -q / 2);
         s.lineTo(q, -q / 2);
@@ -64,7 +62,6 @@ function makePieceShape(type: PieceType): Shape {
       }
       break;
     case 'square':
-      // Square with side ~ S*sqrt(2)/2
       { const a = S * 0.35;
         s.moveTo(-a, -a);
         s.lineTo(a, -a);
@@ -74,7 +71,6 @@ function makePieceShape(type: PieceType): Shape {
       }
       break;
     case 'para':
-      // Parallelogram
       { const w = S * 0.5, h = S * 0.25;
         s.moveTo(-w + h, -h);
         s.lineTo(w + h, -h);
@@ -89,7 +85,6 @@ function makePieceShape(type: PieceType): Shape {
 
 const PIECE_TYPES: PieceType[] = ['lgTri1', 'lgTri2', 'mdTri', 'smTri1', 'smTri2', 'square', 'para'];
 
-// Color palettes [primary, emissive] per piece index
 export const COLOR_SCHEMES: Record<string, number[][]> = {
   cyan: [[0x00ffff,0x009999],[0xff00ff,0x990099],[0x00ff44,0x009933],[0xff8800,0x995500],[0xffff00,0x999900],[0xff0044,0x990033],[0x4488ff,0x335599]],
   green: [[0x44ff88,0x33aa55],[0xff4488,0xaa3355],[0x4488ff,0x3355aa],[0xffaa00,0xaa7700],[0xddff00,0x88aa00],[0xff2244,0xaa1133],[0x00ddff,0x0088aa]],
@@ -97,12 +92,9 @@ export const COLOR_SCHEMES: Record<string, number[][]> = {
   gold: [[0xffcc00,0xaa8800],[0x00ccff,0x0088aa],[0xff4400,0xaa3300],[0x44ff00,0x33aa00],[0xcc00ff,0x8800aa],[0xff0066,0xaa0044],[0x00ff99,0x00aa66]],
 };
 
-// Puzzle definitions: each puzzle defines target {x, y, rot} for each of the 7 pieces
 interface PiecePlacement { x: number; y: number; rot: number; flip?: boolean; }
 interface PuzzleDef { name: string; pieces: PiecePlacement[]; }
 
-// 15 puzzles: 5 easy, 5 medium, 5 hard
-// Positions are in world units on the table surface, rotations in radians
 const PUZZLES: Record<Difficulty, PuzzleDef[]> = {
   easy: [
     { name: 'Square', pieces: [
@@ -230,11 +222,13 @@ export interface SaveData {
   bestTimes: Record<string, number>;
   achievements: Record<string, boolean>;
   colorScheme: string;
+  totalSolves: number;
+  totalPlayTime: number;
 }
 
 export function loadSave(): SaveData {
   try { const r = localStorage.getItem('neon-tangram-save'); if (r) return JSON.parse(r); } catch {}
-  return { bestMoves: {}, bestTimes: {}, achievements: {}, colorScheme: 'cyan' };
+  return { bestMoves: {}, bestTimes: {}, achievements: {}, colorScheme: 'cyan', totalSolves: 0, totalPlayTime: 0 };
 }
 
 export function saveSave(d: SaveData) {
@@ -259,15 +253,31 @@ interface PieceData {
 interface MoveRecord { pieceIdx: number; fromX: number; fromY: number; fromRot: number; fromFlip: boolean; }
 
 const SNAP_DIST = 0.04;
-const SNAP_ANGLE = Math.PI / 6; // 30 degrees tolerance
+const SNAP_ANGLE = Math.PI / 6;
 const MOVE_STEP = 0.02;
-const ROT_STEP = Math.PI / 4; // 45 degree rotation steps
+const ROT_STEP = Math.PI / 4;
 const TABLE_Y = 0.8;
 const TABLE_Z = -1.8;
+
+// Snap animation data
+interface SnapAnim {
+  pieceIdx: number;
+  startX: number; startY: number; startRot: number;
+  endX: number; endY: number; endRot: number;
+  progress: number;
+}
+
+// Win celebration particles
+interface CelebParticle {
+  mesh: Mesh;
+  vx: number; vy: number; vz: number;
+  life: number;
+}
 
 export class GameSystem extends createSystem({
   interactive: { required: [RayInteractable] },
   pressed: { required: [Pressed, RayInteractable] },
+  hovered: { required: [Hovered, RayInteractable] },
 }) {
   world!: World;
   panelEntities: Record<string, Entity> = {};
@@ -296,6 +306,26 @@ export class GameSystem extends createSystem({
   input!: any;
   stickHeld = false;
 
+  // Hint system
+  hintActive = false;
+  hintTimer = 0;
+  hintTargetMeshes: Mesh[] = [];
+
+  // Snap animation
+  snapAnims: SnapAnim[] = [];
+
+  // Win celebration
+  celebParticles: CelebParticle[] = [];
+  winTimer = 0;
+
+  // Audio entities
+  audioEntity: Entity | null = null;
+
+  // Drag state
+  isDragging = false;
+  dragPieceIdx = -1;
+  lastHovered = -1;
+
   onStateChange: (() => void) | null = null;
 
   setRefs(refs: { world: World; panelEntities: Record<string, Entity>; panelPositions: Record<string, [number, number, number]> }) {
@@ -305,6 +335,34 @@ export class GameSystem extends createSystem({
     this.input = (this.world as any).input || this.world.player;
     this.colorPalette = COLOR_SCHEMES[this.save.colorScheme] || COLOR_SCHEMES['cyan'];
     this.buildTable();
+    this.setupAudio();
+  }
+
+  setupAudio() {
+    // Create audio entities for each sound
+    const audioGroup = new Group();
+    audioGroup.position.set(0, TABLE_Y, TABLE_Z);
+    this.world.scene.add(audioGroup);
+    this.audioEntity = this.world.createTransformEntity(audioGroup);
+    this.audioEntity.addComponent(AudioSource, {
+      src: './audio/select.wav',
+      volume: 0.6,
+      positional: false,
+    });
+  }
+
+  playSound(sound: string) {
+    if (!this.audioEntity) return;
+    try {
+      this.audioEntity.addComponent(AudioSource, {
+        src: `./audio/${sound}.wav`,
+        volume: sound === 'win' ? 0.7 : sound === 'move' ? 0.3 : 0.5,
+        positional: false,
+        autoplay: true,
+      });
+    } catch {
+      // Audio may not be ready yet
+    }
   }
 
   setColorScheme(s: string) {
@@ -317,10 +375,30 @@ export class GameSystem extends createSystem({
   buildTable() {
     if (this.table) this.world.scene.remove(this.table);
     const geo = new BoxGeometry(2, 0.06, 1.5);
-    const mat = new MeshStandardMaterial({ color: 0x0a0a1a, emissive: new Color('#050510'), emissiveIntensity: 0.3, metalness: 0.8, roughness: 0.3 });
+    const mat = new MeshStandardMaterial({
+      color: 0x0a0a1a,
+      emissive: new Color('#050510'),
+      emissiveIntensity: 0.3,
+      metalness: 0.8,
+      roughness: 0.3,
+    });
     this.table = new Mesh(geo, mat);
     this.table.position.set(0, TABLE_Y - 0.03, TABLE_Z);
     this.world.scene.add(this.table);
+
+    // Table edge glow
+    const edgeGeo = new BoxGeometry(2.02, 0.08, 1.52);
+    const edgeMat = new MeshStandardMaterial({
+      color: 0x00ffff,
+      emissive: new Color('#00ffff'),
+      emissiveIntensity: 0.3,
+      transparent: true,
+      opacity: 0.15,
+      wireframe: true,
+    });
+    const edgeMesh = new Mesh(edgeGeo, edgeMat);
+    edgeMesh.position.set(0, TABLE_Y - 0.03, TABLE_Z);
+    this.world.scene.add(edgeMesh);
   }
 
   createPieceMesh(type: PieceType, colorIdx: number): { mesh: Mesh; edges: LineSegments } {
@@ -336,7 +414,6 @@ export class GameSystem extends createSystem({
       side: DoubleSide,
     });
     const mesh = new Mesh(geo, mat);
-    // Edges for neon outline
     const edgeGeo = new EdgesGeometry(geo);
     const edgeMat = new LineBasicMaterial({ color: c[0], transparent: true, opacity: 0.8 });
     const edges = new LineSegments(edgeGeo, edgeMat);
@@ -363,10 +440,9 @@ export class GameSystem extends createSystem({
     const puzzles = PUZZLES[this.difficulty];
     const puzzle = puzzles[(this.level - 1) % puzzles.length];
 
-    // Create target silhouette group
     this.targetGroup = new Group();
     this.targetGroup.position.set(0, TABLE_Y + 0.001, TABLE_Z);
-    this.targetGroup.rotation.x = -Math.PI / 2; // lay flat on table
+    this.targetGroup.rotation.x = -Math.PI / 2;
 
     for (let i = 0; i < PIECE_TYPES.length; i++) {
       const target = puzzle.pieces[i];
@@ -378,14 +454,12 @@ export class GameSystem extends createSystem({
     }
     this.world.scene.add(this.targetGroup);
 
-    // Create player pieces scattered around the table edges
     for (let i = 0; i < PIECE_TYPES.length; i++) {
       const type = PIECE_TYPES[i];
       const target = puzzle.pieces[i];
       const { mesh } = this.createPieceMesh(type, i);
 
       const group = new Group();
-      // Scatter pieces around the table
       const angle = (i / 7) * Math.PI * 2;
       const sx = Math.cos(angle) * 0.55;
       const sy = Math.sin(angle) * 0.35;
@@ -394,12 +468,10 @@ export class GameSystem extends createSystem({
       group.position.set(sx, TABLE_Y + PIECE_DEPTH, TABLE_Z + sy);
       group.rotation.x = -Math.PI / 2;
       group.rotation.z = srot;
-
       mesh.position.set(0, 0, 0);
       group.add(mesh);
       this.world.scene.add(group);
 
-      // Hit target for ray interaction
       const hitGeo = new BoxGeometry(S * 0.9, S * 0.9, PIECE_DEPTH + 0.05);
       const hitMat = new MeshBasicMaterial({ visible: false });
       const hitMesh = new Mesh(hitGeo, hitMat);
@@ -424,6 +496,9 @@ export class GameSystem extends createSystem({
     this.timer = 0;
     this.selectedPiece = -1;
     this.moveLimit = this.mode === 'challenge' ? 50 : 0;
+    this.hintActive = false;
+    this.snapAnims = [];
+    this.clearCelebration();
   }
 
   clearPieces() {
@@ -437,6 +512,7 @@ export class GameSystem extends createSystem({
       this.world.scene.remove(this.targetGroup);
       this.targetGroup = null;
     }
+    this.clearHintMeshes();
   }
 
   refreshVisuals() {
@@ -451,14 +527,105 @@ export class GameSystem extends createSystem({
         if (i === this.selectedPiece) {
           mat.emissiveIntensity = 0.8;
           mat.opacity = 1.0;
-          p.group.position.y = TABLE_Y + PIECE_DEPTH + 0.03; // lift selected piece
+          p.group.position.y = TABLE_Y + PIECE_DEPTH + 0.03;
         } else {
           mat.emissiveIntensity = p.snapped ? 0.7 : 0.5;
-          mat.opacity = 0.85;
+          mat.opacity = p.snapped ? 0.95 : 0.85;
           p.group.position.y = TABLE_Y + PIECE_DEPTH;
         }
       }
     }
+  }
+
+  // === Hint system ===
+  showHint() {
+    if (this.selectedPiece < 0 || this.selectedPiece >= this.pieces.length) return;
+    const p = this.pieces[this.selectedPiece];
+    if (p.snapped) return;
+
+    this.clearHintMeshes();
+    this.playSound('hint');
+
+    // Create a glowing ghost at target position
+    const shape = makePieceShape(p.type);
+    const geo = new ExtrudeGeometry(shape, { depth: PIECE_DEPTH * 0.5, bevelEnabled: false });
+    const mat = new MeshStandardMaterial({
+      color: 0x00ffff,
+      emissive: new Color('#00ffff'),
+      emissiveIntensity: 1.0,
+      transparent: true,
+      opacity: 0.5,
+      side: DoubleSide,
+    });
+    const hintMesh = new Mesh(geo, mat);
+    // Position hint at target location
+    const hintGroup = new Group();
+    hintGroup.position.set(p.targetX, TABLE_Y + PIECE_DEPTH + 0.01, TABLE_Z + p.targetY);
+    hintGroup.rotation.x = -Math.PI / 2;
+    hintGroup.rotation.z = p.targetRot;
+    if (p.targetFlip) hintGroup.scale.x = -1;
+    hintGroup.add(hintMesh);
+    this.world.scene.add(hintGroup);
+    this.hintTargetMeshes.push(hintMesh);
+    (hintMesh as any).__hintGroup = hintGroup;
+
+    this.hintActive = true;
+    this.hintTimer = 0;
+    this.moves++; // hints cost a move
+  }
+
+  clearHintMeshes() {
+    for (const m of this.hintTargetMeshes) {
+      const g = (m as any).__hintGroup;
+      if (g) this.world.scene.remove(g);
+    }
+    this.hintTargetMeshes = [];
+    this.hintActive = false;
+  }
+
+  // === Snap animation ===
+  startSnapAnim(idx: number, fromX: number, fromY: number, fromRot: number) {
+    const p = this.pieces[idx];
+    this.snapAnims.push({
+      pieceIdx: idx,
+      startX: fromX, startY: fromY, startRot: fromRot,
+      endX: p.targetX, endY: p.targetY, endRot: p.targetRot,
+      progress: 0,
+    });
+  }
+
+  // === Win celebration ===
+  spawnCelebration() {
+    this.clearCelebration();
+    const colors = [0x00ffff, 0xff00ff, 0xffff00, 0x00ff44, 0xff4400, 0x4488ff];
+    for (let i = 0; i < 60; i++) {
+      const geo = new SphereGeometry(0.015, 6, 6);
+      const mat = new MeshStandardMaterial({
+        color: colors[i % colors.length],
+        emissive: new Color(colors[i % colors.length]),
+        emissiveIntensity: 1.5,
+        transparent: true,
+        opacity: 1,
+      });
+      const mesh = new Mesh(geo, mat);
+      mesh.position.set(0, TABLE_Y + 0.2, TABLE_Z);
+      this.world.scene.add(mesh);
+      this.celebParticles.push({
+        mesh,
+        vx: (Math.random() - 0.5) * 2,
+        vy: Math.random() * 2 + 1,
+        vz: (Math.random() - 0.5) * 2,
+        life: 1 + Math.random() * 1.5,
+      });
+    }
+    this.winTimer = 0;
+  }
+
+  clearCelebration() {
+    for (const p of this.celebParticles) {
+      this.world.scene.remove(p.mesh);
+    }
+    this.celebParticles = [];
   }
 
   movePiece(idx: number, dx: number, dy: number) {
@@ -466,14 +633,15 @@ export class GameSystem extends createSystem({
     const p = this.pieces[idx];
     if (p.snapped) return;
 
-    // Record move for undo
     this.moveHistory.push({ pieceIdx: idx, fromX: p.x, fromY: p.y, fromRot: p.rot, fromFlip: p.flipped });
 
     p.x += dx;
     p.y += dy;
+    // Clamp to table bounds
+    p.x = Math.max(-0.9, Math.min(0.9, p.x));
+    p.y = Math.max(-0.65, Math.min(0.65, p.y));
     p.group.position.x = p.x;
     p.group.position.z = TABLE_Z + p.y;
-    // Update hit target position
     if (p.hitEntity.object3D) {
       p.hitEntity.object3D.position.x = p.x;
       p.hitEntity.object3D.position.z = TABLE_Z + p.y;
@@ -492,6 +660,7 @@ export class GameSystem extends createSystem({
     p.rot += dir * ROT_STEP;
     p.group.rotation.z = p.rot;
     this.moves++;
+    this.playSound('rotate');
     this.checkSnap(idx);
     this.refreshVisuals();
   }
@@ -500,12 +669,13 @@ export class GameSystem extends createSystem({
     if (idx < 0 || idx >= this.pieces.length) return;
     const p = this.pieces[idx];
     if (p.snapped) return;
-    if (p.type !== 'para') return; // only parallelogram can flip
+    if (p.type !== 'para') return;
 
     this.moveHistory.push({ pieceIdx: idx, fromX: p.x, fromY: p.y, fromRot: p.rot, fromFlip: p.flipped });
     p.flipped = !p.flipped;
     p.group.scale.x = p.flipped ? -1 : 1;
     this.moves++;
+    this.playSound('rotate');
     this.checkSnap(idx);
     this.refreshVisuals();
   }
@@ -547,7 +717,7 @@ export class GameSystem extends createSystem({
     const flipMatch = p.flipped === p.targetFlip;
 
     if (dx < SNAP_DIST && dy < SNAP_DIST && daWrap < SNAP_ANGLE && flipMatch) {
-      // Snap into place
+      const oldX = p.x, oldY = p.y, oldRot = p.rot;
       p.x = p.targetX;
       p.y = p.targetY;
       p.rot = p.targetRot;
@@ -559,7 +729,7 @@ export class GameSystem extends createSystem({
         p.hitEntity.object3D.position.x = p.targetX;
         p.hitEntity.object3D.position.z = TABLE_Z + p.targetY;
       }
-      // Check win
+      this.playSound('snap');
       if (this.isSolved()) this.onWin();
     }
   }
@@ -572,6 +742,8 @@ export class GameSystem extends createSystem({
     this.state = 'won';
     this.winStreak++;
     this.totalWins++;
+    this.save.totalSolves = (this.save.totalSolves || 0) + 1;
+    this.save.totalPlayTime = (this.save.totalPlayTime || 0) + this.timer;
     const key = `${this.mode}-${this.difficulty}-${this.level}`;
     if (!this.save.bestMoves[key] || this.moves < this.save.bestMoves[key]) this.save.bestMoves[key] = this.moves;
     if (!this.save.bestTimes[key] || this.timer < this.save.bestTimes[key]) this.save.bestTimes[key] = this.timer;
@@ -599,11 +771,13 @@ export class GameSystem extends createSystem({
       if (all) this.checkAch(`all_${d}`);
     }
     saveSave(this.save);
+    this.playSound('win');
+    this.spawnCelebration();
     this.onStateChange?.();
   }
 
   onLose() {
-    this.state = 'won'; // reuse win screen with different message
+    this.state = 'won';
     this.winStreak = 0;
     this.onStateChange?.();
   }
@@ -627,6 +801,7 @@ export class GameSystem extends createSystem({
       this.selectedPiece = -1;
     } else {
       this.selectedPiece = idx;
+      this.playSound('select');
     }
     this.refreshVisuals();
   }
@@ -641,6 +816,47 @@ export class GameSystem extends createSystem({
   }
 
   update(delta: number) {
+    // Animate hint
+    if (this.hintActive) {
+      this.hintTimer += delta;
+      for (const hm of this.hintTargetMeshes) {
+        const mat = hm.material as MeshStandardMaterial;
+        mat.opacity = Math.max(0, 0.5 * (1 - this.hintTimer / 2));
+        mat.emissiveIntensity = 1.0 + Math.sin(this.hintTimer * 8) * 0.5;
+      }
+      if (this.hintTimer > 2) {
+        this.clearHintMeshes();
+      }
+    }
+
+    // Animate snap transitions
+    for (let i = this.snapAnims.length - 1; i >= 0; i--) {
+      const sa = this.snapAnims[i];
+      sa.progress += delta * 5;
+      if (sa.progress >= 1) {
+        this.snapAnims.splice(i, 1);
+      }
+    }
+
+    // Animate celebration particles
+    if (this.celebParticles.length > 0) {
+      this.winTimer += delta;
+      for (let i = this.celebParticles.length - 1; i >= 0; i--) {
+        const cp = this.celebParticles[i];
+        cp.life -= delta;
+        cp.mesh.position.x += cp.vx * delta;
+        cp.mesh.position.y += cp.vy * delta;
+        cp.mesh.position.z += cp.vz * delta;
+        cp.vy -= 2 * delta; // gravity
+        const mat = cp.mesh.material as MeshStandardMaterial;
+        mat.opacity = Math.max(0, cp.life / 2);
+        if (cp.life <= 0) {
+          this.world.scene.remove(cp.mesh);
+          this.celebParticles.splice(i, 1);
+        }
+      }
+    }
+
     if (this.state === 'playing') {
       if (this.mode !== 'zen') this.timer += delta;
       if (this.mode === 'speed' && this.timer >= 120) { this.onLose(); return; }
@@ -658,14 +874,22 @@ export class GameSystem extends createSystem({
           if (kb.getKeyDown('KeyE')) this.rotatePiece(this.selectedPiece, -1);
           if (kb.getKeyDown('KeyF')) this.flipPiece(this.selectedPiece);
         }
-        // Cycle selection with Tab
         if (kb.getKeyDown('Tab')) {
-          this.selectedPiece = (this.selectedPiece + 1) % this.pieces.length;
+          // Cycle to next non-snapped piece
+          let next = (this.selectedPiece + 1) % this.pieces.length;
+          let tries = 0;
+          while (tries < 7 && this.pieces[next].snapped) {
+            next = (next + 1) % this.pieces.length;
+            tries++;
+          }
+          this.selectedPiece = next;
+          this.playSound('select');
           this.refreshVisuals();
         }
         if (kb.getKeyDown('KeyU') || kb.getKeyDown('KeyZ')) this.undoMove();
         if (kb.getKeyDown('KeyR')) this.startGame(this.mode, this.difficulty, this.level);
         if (kb.getKeyDown('Escape')) { this.state = 'paused'; this.onStateChange?.(); }
+        if (kb.getKeyDown('KeyH')) this.showHint();
       }
 
       // XR controllers
@@ -702,6 +926,34 @@ export class GameSystem extends createSystem({
         const obj = entity.object3D;
         if (obj?.userData?.pieceIdx !== undefined) {
           this.handlePieceClick(obj.userData.pieceIdx as number);
+        }
+      }
+
+      // Hover feedback
+      let hoveredPiece = -1;
+      for (const entity of this.queries.hovered.entities) {
+        if (!entity.hasComponent(Hovered)) continue;
+        const obj = entity.object3D;
+        if (obj?.userData?.pieceIdx !== undefined) {
+          hoveredPiece = obj.userData.pieceIdx as number;
+        }
+      }
+      if (hoveredPiece !== this.lastHovered) {
+        this.lastHovered = hoveredPiece;
+        // Update cursor hint on hover
+        for (let i = 0; i < this.pieces.length; i++) {
+          if (i === this.selectedPiece) continue;
+          const mesh = this.pieces[i].group.children[0] as Mesh;
+          if (mesh) {
+            const mat = mesh.material as MeshStandardMaterial;
+            if (i === hoveredPiece && !this.pieces[i].snapped) {
+              mat.emissiveIntensity = 0.65;
+              this.pieces[i].group.position.y = TABLE_Y + PIECE_DEPTH + 0.01;
+            } else {
+              mat.emissiveIntensity = this.pieces[i].snapped ? 0.7 : 0.5;
+              this.pieces[i].group.position.y = TABLE_Y + PIECE_DEPTH;
+            }
+          }
         }
       }
 

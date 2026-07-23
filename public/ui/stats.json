@@ -11,7 +11,7 @@
             "sourceTag": "text",
             "type": "custom",
             "children": [
-              "How to Play"
+              "Statistics"
             ],
             "properties": {
               "class": "title"
@@ -19,13 +19,11 @@
             "dataUid": "uid-3"
           },
           {
-            "sourceTag": "text",
+            "sourceTag": "container",
             "type": "custom",
-            "children": [
-              "Arrange all 7 tangram pieces to fill the target silhouette on the table."
-            ],
+            "children": [],
             "properties": {
-              "class": "text"
+              "class": "divider"
             },
             "dataUid": "uid-4"
           },
@@ -33,10 +31,11 @@
             "sourceTag": "text",
             "type": "custom",
             "children": [
-              "Keyboard Controls"
+              "Puzzles Solved: 0"
             ],
             "properties": {
-              "class": "section"
+              "class": "stat",
+              "name": "stat-solves"
             },
             "dataUid": "uid-5"
           },
@@ -44,10 +43,11 @@
             "sourceTag": "text",
             "type": "custom",
             "children": [
-              "Click a piece to select it. Arrows/WASD to move. Q/E to rotate 45 degrees. F to flip the parallelogram. Tab to cycle pieces. H for a hint. Z to undo. R to restart. Esc to pause."
+              "Total Play Time: 0m"
             ],
             "properties": {
-              "class": "text"
+              "class": "stat",
+              "name": "stat-time"
             },
             "dataUid": "uid-6"
           },
@@ -55,10 +55,11 @@
             "sourceTag": "text",
             "type": "custom",
             "children": [
-              "XR Controls"
+              "Achievements: 0 / 20"
             ],
             "properties": {
-              "class": "section"
+              "class": "stat",
+              "name": "stat-ach"
             },
             "dataUid": "uid-7"
           },
@@ -66,10 +67,11 @@
             "sourceTag": "text",
             "type": "custom",
             "children": [
-              "Point and click to select pieces. Thumbstick to move/rotate. A/X to flip. B/Y to pause."
+              "Best Win Streak: 0"
             ],
             "properties": {
-              "class": "text"
+              "class": "stat",
+              "name": "stat-streak"
             },
             "dataUid": "uid-8"
           },
@@ -77,45 +79,22 @@
             "sourceTag": "text",
             "type": "custom",
             "children": [
-              "Game Modes"
+              "Progress: Easy 0/20 | Med 0/20 | Hard 0/20"
             ],
             "properties": {
-              "class": "section"
+              "class": "stat",
+              "name": "stat-progress"
             },
             "dataUid": "uid-9"
           },
           {
-            "sourceTag": "text",
+            "sourceTag": "container",
             "type": "custom",
-            "children": [
-              "Classic: Solve at your own pace. Speed: 2-minute time limit. Zen: No timer, no pressure. Challenge: Limited to 50 moves."
-            ],
+            "children": [],
             "properties": {
-              "class": "text"
+              "class": "divider"
             },
             "dataUid": "uid-10"
-          },
-          {
-            "sourceTag": "text",
-            "type": "custom",
-            "children": [
-              "Tips"
-            ],
-            "properties": {
-              "class": "section"
-            },
-            "dataUid": "uid-11"
-          },
-          {
-            "sourceTag": "text",
-            "type": "custom",
-            "children": [
-              "Pieces snap when close to correct position + rotation. Use hints when stuck -- they cost 1 move. Start with Easy puzzles to learn piece shapes."
-            ],
-            "properties": {
-              "class": "text"
-            },
-            "dataUid": "uid-12"
           },
           {
             "sourceTag": "text",
@@ -127,7 +106,7 @@
               "class": "back",
               "name": "btn-back"
             },
-            "dataUid": "uid-13"
+            "dataUid": "uid-11"
           }
         ],
         "properties": {
@@ -144,7 +123,7 @@
       "content": {
         "flexDirection": "column",
         "alignItems": "center",
-        "gap": "8",
+        "gap": "10",
         "padding": "16",
         "backgroundColor": "#0a0a2aee",
         "borderRadius": 12,
@@ -158,17 +137,18 @@
         "color": "#00ffff"
       }
     },
-    "section": {
+    "stat": {
       "content": {
-        "fontSize": "13",
-        "color": "#ffcc00"
+        "fontSize": "12",
+        "color": "#aaccee",
+        "width": "240"
       }
     },
-    "text": {
+    "divider": {
       "content": {
-        "fontSize": "11",
-        "color": "#aaccee",
-        "width": "280"
+        "width": "200",
+        "height": "1",
+        "backgroundColor": "#00ffff22"
       }
     },
     "back": {
@@ -186,7 +166,7 @@
         "column": 0
       },
       "end": {
-        "line": 21,
+        "line": 19,
         "column": 8
       }
     },
@@ -210,24 +190,24 @@
         "column": 10
       }
     },
-    "section": {
+    "stat": {
       "start": {
         "line": 4,
         "column": 4
       },
       "end": {
         "line": 4,
-        "column": 12
+        "column": 9
       }
     },
-    "text": {
+    "divider": {
       "start": {
         "line": 5,
         "column": 4
       },
       "end": {
         "line": 5,
-        "column": 9
+        "column": 12
       }
     },
     "back": {
@@ -246,7 +226,7 @@
         "column": 2
       },
       "end": {
-        "line": 20,
+        "line": 18,
         "column": 14
       }
     },
@@ -257,7 +237,7 @@
       },
       "end": {
         "line": 9,
-        "column": 42
+        "column": 41
       }
     },
     "uid-4": {
@@ -267,7 +247,7 @@
       },
       "end": {
         "line": 10,
-        "column": 102
+        "column": 43
       }
     },
     "uid-5": {
@@ -277,7 +257,7 @@
       },
       "end": {
         "line": 11,
-        "column": 50
+        "column": 66
       }
     },
     "uid-6": {
@@ -287,7 +267,7 @@
       },
       "end": {
         "line": 12,
-        "column": 207
+        "column": 66
       }
     },
     "uid-7": {
@@ -297,7 +277,7 @@
       },
       "end": {
         "line": 13,
-        "column": 44
+        "column": 66
       }
     },
     "uid-8": {
@@ -307,7 +287,7 @@
       },
       "end": {
         "line": 14,
-        "column": 117
+        "column": 67
       }
     },
     "uid-9": {
@@ -317,7 +297,7 @@
       },
       "end": {
         "line": 15,
-        "column": 43
+        "column": 93
       }
     },
     "uid-10": {
@@ -327,7 +307,7 @@
       },
       "end": {
         "line": 16,
-        "column": 150
+        "column": 43
       }
     },
     "uid-11": {
@@ -337,26 +317,6 @@
       },
       "end": {
         "line": 17,
-        "column": 37
-      }
-    },
-    "uid-12": {
-      "start": {
-        "line": 18,
-        "column": 4
-      },
-      "end": {
-        "line": 18,
-        "column": 173
-      }
-    },
-    "uid-13": {
-      "start": {
-        "line": 19,
-        "column": 4
-      },
-      "end": {
-        "line": 19,
         "column": 50
       }
     }

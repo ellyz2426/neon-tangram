@@ -19,6 +19,7 @@ export class UISystem extends createSystem({
   pausePanel: { required: [PanelUI, PanelDocument], where: [eq(PanelUI, 'config', './ui/pause.json')] },
   achievementsPanel: { required: [PanelUI, PanelDocument], where: [eq(PanelUI, 'config', './ui/achpanel.json')] },
   tutorialPanel: { required: [PanelUI, PanelDocument], where: [eq(PanelUI, 'config', './ui/tutorial.json')] },
+  statsPanel: { required: [PanelUI, PanelDocument], where: [eq(PanelUI, 'config', './ui/stats.json')] },
 }) {
   world!: World;
   game!: GameSystem;
@@ -32,6 +33,7 @@ export class UISystem extends createSystem({
   levelSelectDoc: UIKitDocument | null = null;
   settingsDoc: UIKitDocument | null = null;
   achievementsDoc: UIKitDocument | null = null;
+  statsDoc: UIKitDocument | null = null;
 
   setRefs(refs: { world: World; game: GameSystem; panelEntities: Record<string, Entity>; panelPositions: Record<string, [number, number, number]> }) {
     this.world = refs.world;
@@ -47,6 +49,7 @@ export class UISystem extends createSystem({
     this.queries.pausePanel.subscribe('qualify', (e) => this.onPauseReady(e));
     this.queries.achievementsPanel.subscribe('qualify', (e) => this.onAchievementsReady(e));
     this.queries.tutorialPanel.subscribe('qualify', (e) => this.onTutorialReady(e));
+    this.queries.statsPanel.subscribe('qualify', (e) => this.onStatsReady(e));
   }
 
   getDoc(e: Entity): UIKitDocument | null {
@@ -77,6 +80,7 @@ export class UISystem extends createSystem({
     this.showPanel('pause', s === 'paused');
     this.showPanel('achievements', s === 'achievements');
     this.showPanel('tutorial', s === 'tutorial');
+    this.showPanel('stats', false);
     if (s === 'won') this.updateResults();
   }
 
@@ -90,6 +94,11 @@ export class UISystem extends createSystem({
     (d.getElementById('btn-settings') as UIKit.Text)?.addEventListener('click', () => { this.game.state = 'settings'; this.onStateChange(); this.updateSettings(); });
     (d.getElementById('btn-achievements') as UIKit.Text)?.addEventListener('click', () => { this.game.state = 'achievements'; this.onStateChange(); this.updateAchievements(); });
     (d.getElementById('btn-tutorial') as UIKit.Text)?.addEventListener('click', () => { this.game.state = 'tutorial'; this.onStateChange(); });
+    (d.getElementById('btn-stats') as UIKit.Text)?.addEventListener('click', () => {
+      this.showPanel('menu', false);
+      this.showPanel('stats', true);
+      this.updateStats();
+    });
   }
 
   onHudReady(e: Entity) {
@@ -98,6 +107,7 @@ export class UISystem extends createSystem({
     (this.hudDoc.getElementById('btn-undo') as UIKit.Text)?.addEventListener('click', () => this.game.undoMove());
     (this.hudDoc.getElementById('btn-pause') as UIKit.Text)?.addEventListener('click', () => { this.game.state = 'paused'; this.onStateChange(); });
     (this.hudDoc.getElementById('btn-restart') as UIKit.Text)?.addEventListener('click', () => this.game.startGame(this.game.mode, this.game.difficulty, this.game.level));
+    (this.hudDoc.getElementById('btn-hint') as UIKit.Text)?.addEventListener('click', () => this.game.showHint());
   }
 
   onResultsReady(e: Entity) {
@@ -156,6 +166,15 @@ export class UISystem extends createSystem({
     (d.getElementById('btn-back') as UIKit.Text)?.addEventListener('click', () => { this.game.state = 'menu'; this.onStateChange(); });
   }
 
+  onStatsReady(e: Entity) {
+    this.statsDoc = this.getDoc(e);
+    if (!this.statsDoc) return;
+    (this.statsDoc.getElementById('btn-back') as UIKit.Text)?.addEventListener('click', () => {
+      this.showPanel('stats', false);
+      this.showPanel('menu', true);
+    });
+  }
+
   updateLevelSelect() {
     if (!this.levelSelectDoc) return;
     const names: Record<string, string> = { classic: 'Classic', speed: 'Speed', zen: 'Zen', challenge: 'Challenge' };
@@ -166,7 +185,10 @@ export class UISystem extends createSystem({
     for (let i = 1; i <= 5; i++) {
       const k = `${this.game.mode}-${this.game.difficulty}-${i}`;
       const b = this.game.save.bestMoves[k];
-      (this.levelSelectDoc.getElementById(`btn-level-${i}`) as UIKit.Text)?.setProperties({ text: b ? `Level ${i} -- ${b} moves` : `Level ${i}` });
+      const star = b ? (b <= 10 ? '***' : b <= 25 ? '**' : '*') : '';
+      (this.levelSelectDoc.getElementById(`btn-level-${i}`) as UIKit.Text)?.setProperties({
+        text: b ? `Level ${i} ${star} ${b}mv` : `Level ${i}`,
+      });
     }
   }
 
@@ -208,12 +230,44 @@ export class UISystem extends createSystem({
     }
   }
 
+  updateStats() {
+    if (!this.statsDoc) return;
+    const s = this.game.save;
+    this.setText(this.statsDoc, 'stat-solves', `Puzzles Solved: ${s.totalSolves || 0}`);
+    const totalTime = s.totalPlayTime || 0;
+    const mins = Math.floor(totalTime / 60);
+    const hrs = Math.floor(mins / 60);
+    this.setText(this.statsDoc, 'stat-time', `Total Play Time: ${hrs > 0 ? hrs + 'h ' : ''}${mins % 60}m`);
+    const achCount = Object.keys(s.achievements).filter(k => s.achievements[k]).length;
+    this.setText(this.statsDoc, 'stat-ach', `Achievements: ${achCount} / ${ACHIEVEMENTS.length}`);
+    this.setText(this.statsDoc, 'stat-streak', `Best Win Streak: ${this.game.winStreak}`);
+    // Count completed levels per difficulty
+    let easyDone = 0, medDone = 0, hardDone = 0;
+    for (const k of Object.keys(s.bestMoves)) {
+      if (k.includes('-easy-')) easyDone++;
+      if (k.includes('-medium-')) medDone++;
+      if (k.includes('-hard-')) hardDone++;
+    }
+    this.setText(this.statsDoc, 'stat-progress', `Progress: Easy ${easyDone}/20 | Med ${medDone}/20 | Hard ${hardDone}/20`);
+  }
+
   update() {
     if (this.game.state === 'playing' && this.hudDoc) {
       const mv = this.game.moves;
       if (mv !== this.lastMoves) {
         this.lastMoves = mv;
         this.setText(this.hudDoc, 'moves', this.game.mode === 'challenge' && this.game.moveLimit > 0 ? `Moves: ${mv} / ${this.game.moveLimit}` : `Moves: ${mv}`);
+        // Show selected piece name
+        if (this.game.selectedPiece >= 0) {
+          const names: Record<string, string> = {
+            lgTri1: 'Lg Triangle', lgTri2: 'Lg Triangle', mdTri: 'Med Triangle',
+            smTri1: 'Sm Triangle', smTri2: 'Sm Triangle', square: 'Square', para: 'Parallelogram',
+          };
+          const p = this.game.pieces[this.game.selectedPiece];
+          this.setText(this.hudDoc, 'piece-info', p ? names[p.type] || '' : '');
+        } else {
+          this.setText(this.hudDoc, 'piece-info', 'Click a piece');
+        }
       }
       const ti = Math.floor(this.game.timer);
       if (ti !== this.lastTimer) {

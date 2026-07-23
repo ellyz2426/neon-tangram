@@ -22,7 +22,7 @@
             "sourceTag": "text",
             "type": "custom",
             "children": [
-              "Arrange all 7 tangram pieces to fill the target shape."
+              "Arrange all 7 tangram pieces to fill the target silhouette on the table."
             ],
             "properties": {
               "class": "text"
@@ -33,10 +33,10 @@
             "sourceTag": "text",
             "type": "custom",
             "children": [
-              "Select a piece, then move it into position. Rotate pieces to fit."
+              "Keyboard Controls"
             ],
             "properties": {
-              "class": "text"
+              "class": "section"
             },
             "dataUid": "uid-5"
           },
@@ -44,7 +44,7 @@
             "sourceTag": "text",
             "type": "custom",
             "children": [
-              "Controls: Click/Ray to select. Arrows to move. Q/E to rotate. F to flip parallelogram."
+              "Click a piece to select it. Arrows/WASD to move. Q/E to rotate 45 degrees. F to flip the parallelogram. Tab to cycle pieces. H for a hint. Z to undo. R to restart. Esc to pause."
             ],
             "properties": {
               "class": "text"
@@ -55,10 +55,10 @@
             "sourceTag": "text",
             "type": "custom",
             "children": [
-              "XR: Point and grab pieces. Thumbstick to rotate. A/X to flip."
+              "XR Controls"
             ],
             "properties": {
-              "class": "text"
+              "class": "section"
             },
             "dataUid": "uid-7"
           },
@@ -66,12 +66,56 @@
             "sourceTag": "text",
             "type": "custom",
             "children": [
-              "Pieces snap into place when close to the correct position."
+              "Point and click to select pieces. Thumbstick to move/rotate. A/X to flip. B/Y to pause."
             ],
             "properties": {
               "class": "text"
             },
             "dataUid": "uid-8"
+          },
+          {
+            "sourceTag": "text",
+            "type": "custom",
+            "children": [
+              "Game Modes"
+            ],
+            "properties": {
+              "class": "section"
+            },
+            "dataUid": "uid-9"
+          },
+          {
+            "sourceTag": "text",
+            "type": "custom",
+            "children": [
+              "Classic: Solve at your own pace. Speed: 2-minute time limit. Zen: No timer, no pressure. Challenge: Limited to 50 moves."
+            ],
+            "properties": {
+              "class": "text"
+            },
+            "dataUid": "uid-10"
+          },
+          {
+            "sourceTag": "text",
+            "type": "custom",
+            "children": [
+              "Tips"
+            ],
+            "properties": {
+              "class": "section"
+            },
+            "dataUid": "uid-11"
+          },
+          {
+            "sourceTag": "text",
+            "type": "custom",
+            "children": [
+              "Pieces snap when close to correct position + rotation. Use hints when stuck -- they cost 1 move. Start with Easy puzzles to learn piece shapes."
+            ],
+            "properties": {
+              "class": "text"
+            },
+            "dataUid": "uid-12"
           },
           {
             "sourceTag": "text",
@@ -83,7 +127,7 @@
               "class": "back",
               "name": "btn-back"
             },
-            "dataUid": "uid-9"
+            "dataUid": "uid-13"
           }
         ],
         "properties": {
@@ -114,11 +158,17 @@
         "color": "#00ffff"
       }
     },
+    "section": {
+      "content": {
+        "fontSize": "13",
+        "color": "#ffcc00"
+      }
+    },
     "text": {
       "content": {
         "fontSize": "11",
         "color": "#aaccee",
-        "width": "260"
+        "width": "280"
       }
     },
     "back": {
@@ -136,7 +186,7 @@
         "column": 0
       },
       "end": {
-        "line": 16,
+        "line": 21,
         "column": 8
       }
     },
@@ -160,103 +210,153 @@
         "column": 10
       }
     },
-    "text": {
+    "section": {
       "start": {
         "line": 4,
         "column": 4
       },
       "end": {
         "line": 4,
+        "column": 12
+      }
+    },
+    "text": {
+      "start": {
+        "line": 5,
+        "column": 4
+      },
+      "end": {
+        "line": 5,
         "column": 9
       }
     },
     "back": {
       "start": {
-        "line": 5,
+        "line": 6,
         "column": 4
       },
       "end": {
-        "line": 5,
+        "line": 6,
         "column": 9
       }
     },
     "uid-2": {
       "start": {
-        "line": 7,
+        "line": 8,
         "column": 2
       },
       "end": {
-        "line": 15,
+        "line": 20,
         "column": 14
       }
     },
     "uid-3": {
       "start": {
-        "line": 8,
+        "line": 9,
         "column": 4
       },
       "end": {
-        "line": 8,
+        "line": 9,
         "column": 42
       }
     },
     "uid-4": {
       "start": {
-        "line": 9,
+        "line": 10,
         "column": 4
       },
       "end": {
-        "line": 9,
-        "column": 84
+        "line": 10,
+        "column": 102
       }
     },
     "uid-5": {
       "start": {
-        "line": 10,
+        "line": 11,
         "column": 4
       },
       "end": {
-        "line": 10,
-        "column": 95
+        "line": 11,
+        "column": 50
       }
     },
     "uid-6": {
       "start": {
-        "line": 11,
+        "line": 12,
         "column": 4
       },
       "end": {
-        "line": 11,
-        "column": 116
+        "line": 12,
+        "column": 207
       }
     },
     "uid-7": {
       "start": {
-        "line": 12,
+        "line": 13,
         "column": 4
       },
       "end": {
-        "line": 12,
-        "column": 91
+        "line": 13,
+        "column": 44
       }
     },
     "uid-8": {
       "start": {
-        "line": 13,
+        "line": 14,
         "column": 4
       },
       "end": {
-        "line": 13,
-        "column": 88
+        "line": 14,
+        "column": 117
       }
     },
     "uid-9": {
       "start": {
-        "line": 14,
+        "line": 15,
         "column": 4
       },
       "end": {
-        "line": 14,
+        "line": 15,
+        "column": 43
+      }
+    },
+    "uid-10": {
+      "start": {
+        "line": 16,
+        "column": 4
+      },
+      "end": {
+        "line": 16,
+        "column": 150
+      }
+    },
+    "uid-11": {
+      "start": {
+        "line": 17,
+        "column": 4
+      },
+      "end": {
+        "line": 17,
+        "column": 37
+      }
+    },
+    "uid-12": {
+      "start": {
+        "line": 18,
+        "column": 4
+      },
+      "end": {
+        "line": 18,
+        "column": 173
+      }
+    },
+    "uid-13": {
+      "start": {
+        "line": 19,
+        "column": 4
+      },
+      "end": {
+        "line": 19,
         "column": 50
       }
     }

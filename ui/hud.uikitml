@@ -1,16 +1,27 @@
 <panel>
   <style>
-    .root { flexDirection: row; alignItems: center; justifyContent: space-between; gap: 8; padding: 6; backgroundColor: #0a0a2acc; borderRadius: 8; borderColor: #00ffff33; borderWidth: 1; }
+    .root { flexDirection: column; alignItems: center; gap: 4; padding: 6; backgroundColor: #0a0a2acc; borderRadius: 8; borderColor: #00ffff33; borderWidth: 1; }
+    .top { flexDirection: row; alignItems: center; justifyContent: space-between; gap: 8; width: 100%; }
+    .bottom { flexDirection: row; alignItems: center; justifyContent: center; gap: 6; }
     .label { fontSize: 11; color: #00ffff; }
+    .piece-info { fontSize: 9; color: #88aacc; }
     .btn { fontSize: 10; color: #ffffff; backgroundColor: #1a1a3a; padding: 4; borderRadius: 4; borderColor: #00ffff33; borderWidth: 1; cursor: pointer; }
     .btn:hover { backgroundColor: #00aacc; }
+    .hint-btn { fontSize: 10; color: #ffcc00; backgroundColor: #2a2a1a; padding: 4; borderRadius: 4; borderColor: #ffcc0044; borderWidth: 1; cursor: pointer; }
+    .hint-btn:hover { backgroundColor: #aa8800; }
   </style>
   <container class="root">
-    <text class="label" name="level">Easy Lv1</text>
-    <text class="label" name="moves">Moves: 0</text>
-    <text class="label" name="timer">0:00</text>
-    <text class="btn" name="btn-undo">Undo</text>
-    <text class="btn" name="btn-restart">Reset</text>
-    <text class="btn" name="btn-pause">II</text>
+    <container class="top">
+      <text class="label" name="level">Easy Lv1</text>
+      <text class="label" name="moves">Moves: 0</text>
+      <text class="label" name="timer">0:00</text>
+    </container>
+    <container class="bottom">
+      <text class="piece-info" name="piece-info">Click a piece</text>
+      <text class="btn" name="btn-undo">Undo</text>
+      <text class="hint-btn" name="btn-hint">Hint</text>
+      <text class="btn" name="btn-restart">Reset</text>
+      <text class="btn" name="btn-pause">II</text>
+    </container>
   </container>
 </panel>

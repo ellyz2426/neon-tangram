@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 2,
+  "sessionId": "2dacedf5-3d3a-4c36-bb77-724e4a590741",
+  "workspaceRoot": "/home/hatch/workspace/neon-tangram",
+  "pid": 11055,
+  "port": 5173,
+  "localUrl": "http://localhost:5173/",
+  "networkUrls": [
+    "http://198.19.0.2:5173/"
+  ],
+  "aiMode": "agent",
+  "browser": {
+    "status": "connected",
+    "connected": true,
+    "commandReady": true,
+    "connectedClientCount": 1,
+    "lastTransitionAt": "2026-07-23T01:14:09.083Z",
+    "lastBridgeConnectedAt": "2026-07-23T01:13:57.683Z",
+    "lastCommandReadyAt": "2026-07-23T01:14:09.083Z"
+  },
+  "registeredAt": "2026-07-23T01:13:55.681Z",
+  "updatedAt": "2026-07-23T01:14:09.088Z"
+}
